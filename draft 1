@@ -22,32 +22,32 @@ class Room:
     def move(self):
         direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
         if direction_input == 'north':
-            if self.directions[0] != None:
+            if self.directions[0] != 'None':
                 self.directions[0].entering()
                 getLocation(self.directions[0])
                 self.leaving()
-            elif self.directions[0] == None:
+            elif self.directions[0] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
         elif direction_input == 'east':
-            if self.directions[1] != None:
+            if self.directions[1] != 'None':
                 self.directions[1].entering()
                 getLocation(self.directions[1])
                 self.leaving()
-            elif self.directions[1] == None:
+            elif self.directions[1] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
         elif direction_input == 'south':
-            if self.directions[2] != None:
+            if self.directions[2] != 'None':
                 self.directions[2].entering()
                 getLocation(self.directions[2])
                 self.leaving()
-            elif self.directions[2] == None:
+            elif self.directions[2] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
         elif direction_input == 'west':
-            if self.directions[3] != None:
+            if self.directions[3] != 'None':
                 self.directions[3].entering()
                 getLocation(self.directions[3])
                 self.leaving()
-            elif self.directions[3] == None:
+            elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
 
 
@@ -79,16 +79,17 @@ def initialization():
 
 def main():
     game = True
-    Location1.entering()
-    getLocation(Location1)
+    loc = Location1
+    loc.entering()
+    getLocation(loc)
     while game is True:
         game_loop()
 
 
 def game_loop():
     for loc in all_locations:
+        try:
             while loc.inRoom() is True:
-                #getLocation(loc)
                 query = input('What would you like to do? ')
                 if query == 'move':
                     loc.move()
@@ -105,11 +106,11 @@ def game_loop():
                     getLocation(loc)
                 else:
                     print('Didn\'t think of that option yet. Nice.')
-
-
-
+        except:
+            pass
 
 player = []
+
 Location1 = Room('Entrance')
 Location2 = Room('Public Reading Space')
 Location3 = Room('Circulation Desk')
@@ -163,17 +164,33 @@ Location50 = Room('7 East, Stacks')
 Location51 = Room('7 South, Stacks')
 Location52 = Room('7 West, Stacks')
 
-all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7]
+all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7, Location8,
+                 Location9, Location10, Location11, Location12, Location13, Location14, Location15, Location16,
+                 Location17, Location18, Location19, Location20, Location21, Location22, Location23, Location24,
+                 Location25, Location26, Location27, Location28, Location29, Location30, Location31, Location32,
+                 Location33, Location34, Location35, Location36, Location37, Location38, Location39, Location40,
+                 Location41, Location42, Location43, Location44, Location45, Location46, Location47, Location48,
+                 Location49, Location50, Location51, Location52]
 
-Location1_locations = [None, Location2, None, None]
-Location2_locations = [None, None, None, Location1]
+location_count = 0
+infile = open('adjacent_rooms_file.txt', 'r')
+for location in all_locations:
+    line = infile.readline()
+    line = line.split()
+    line = line[2:]
+    line = ' '.join(line)
+    line = line.strip('[')
+    line = line.strip(']')
+    line = line.replace(',', '')
+    line = line.split()
+    for rooms in line:
+        if rooms != 'None':
+            rooms = eval(rooms)
+            location.add_directions(rooms)
+        else:
+            location.add_directions(rooms)
 
-for rooms in Location1_locations:
-    Location1.add_directions(rooms)
-
-for rooms in Location2_locations:
-    Location2.add_directions(rooms)
-
+infile.close()
 
 introduction()
 initialization()
