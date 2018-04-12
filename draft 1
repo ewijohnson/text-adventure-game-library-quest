@@ -2,9 +2,10 @@ class Room:
 
     def __init__(self, name):
         self.name = name
+        self.directions = []
 
-    def inRoom(self):
-        return self.enter
+    def add_directions(self, direction):
+        self.directions.append(direction)
 
     def entering(self):
         self.enter = True
@@ -12,38 +13,41 @@ class Room:
     def leaving(self):
         self.enter = False
 
+    def inRoom(self):
+        return self.enter
+
     def getName(self):
         return self.name
 
-    def move(self, north_room, east_room, south_room, west_room):
-        direction = input("Enter a direction <'north', 'east', 'south', 'west'>: ")
-        if direction == 'north':
-            if north_room != None:
-                north_room.entering()
+    def move(self):
+        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
+        if direction_input == 'north':
+            if self.directions[0] != None:
+                self.directions[0].entering()
+                getLocation(self.directions[0])
                 self.leaving()
-                return north_room
-            elif north_room == None:
+            elif self.directions[0] == None:
                 print("\nThat room doesn't exist. Try again.\n")
-        elif direction == 'east':
-            if east_room != None:
-                east_room.entering()
+        elif direction_input == 'east':
+            if self.directions[1] != None:
+                self.directions[1].entering()
+                getLocation(self.directions[1])
                 self.leaving()
-                return east_room
-            elif east_room == None:
+            elif self.directions[1] == None:
                 print("\nThat room doesn't exist. Try again.\n")
-        elif direction == 'south':
-            if south_room != None:
-                south_room.entering()
+        elif direction_input == 'south':
+            if self.directions[2] != None:
+                self.directions[2].entering()
+                getLocation(self.directions[2])
                 self.leaving()
-                return south_room
-            elif south_room == None:
+            elif self.directions[2] == None:
                 print("\nThat room doesn't exist. Try again.\n")
-        elif direction == 'west':
-            if west_room != None:
-                west_room.entering()
+        elif direction_input == 'west':
+            if self.directions[3] != None:
+                self.directions[3].entering()
+                getLocation(self.directions[3])
                 self.leaving()
-                return west_room
-            elif west_room == None:
+            elif self.directions[3] == None:
                 print("\nThat room doesn't exist. Try again.\n")
 
 
@@ -53,7 +57,7 @@ def introduction():
 
 def getLocation(place):
     currentLocation = place.getName()
-    print(f'You are currently in the {currentLocation}.')
+    print(f'\nYou are currently in the {currentLocation}.')
 
 
 def initialization_answer(choice):
@@ -73,175 +77,36 @@ def initialization():
     initialization_answer(opening_choice)
 
 
-def room1():
-    while Location1.inRoom() == True:
-        youAreHere = Location1
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(None, Location2, None, None)
-            if move_to_room == Location2:
-                room2()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
+def main():
+    game = True
+    Location1.entering()
+    getLocation(Location1)
+    while game is True:
+        game_loop()
 
 
-def room2():
-    while Location2.inRoom() == True:
-        youAreHere = Location2
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(Location3, Location7, Location4, Location1)
-            if move_to_room == Location3:
-                room3()
-            elif move_to_room == Location7:
-                room7()
-            elif move_to_room == Location4:
-                room4()
-            elif move_to_room == Location1:
-                room1()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
+def game_loop():
+    for loc in all_locations:
+            while loc.inRoom() is True:
+                #getLocation(loc)
+                query = input('What would you like to do? ')
+                if query == 'move':
+                    loc.move()
+                    game_loop()
+                elif query == 'check items':
+                    print('check items')
+                elif query == 'look around':
+                    print('Describe the settings of the room')
+                elif query == 'talk':
+                    print('talk to someone in current location')
+                elif query == 'use item':
+                    print('use an item')
+                elif query == 'Where am I?':
+                    getLocation(loc)
+                else:
+                    print('Didn\'t think of that option yet. Nice.')
 
 
-def room3():
-    while Location3.inRoom() == True:
-        youAreHere = Location3
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(None, None, Location2, None)
-            if move_to_room == Location2:
-                room2()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
-
-
-def room4():
-    while Location4.inRoom() == True:
-        youAreHere = Location4
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(Location2, None, None, None)
-            if move_to_room == Location2:
-                room2()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
-
-
-def room5():
-    while Location5.inRoom() == True:
-        youAreHere = Location5
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(None, None, None, Location7)
-            if move_to_room == Location7:
-                room7()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
-
-
-def room6():
-    while Location6.inRoom() == True:
-        youAreHere = Location6
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(None, None, Location7, None)
-            if move_to_room == Location7:
-                room7()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
-
-
-def room7():
-    while Location7.inRoom() == True:
-        youAreHere = Location7
-        getLocation(youAreHere)
-        query = input('What would you like to do? ')
-        if query == 'move':
-            move_to_room = youAreHere.move(Location6, Location5, None, Location2)
-            if move_to_room == Location6:
-                room6()
-            elif move_to_room == Location5:
-                room5()
-            elif move_to_room == Location2:
-                room2()
-        elif query == 'check items':
-            print('check items')
-        elif query == 'look around':
-            print('Describe the settings of the room')
-        elif query == 'talk':
-            print('talk to someone in current location')
-        elif query == 'use item':
-            print('use an item')
-        elif query == 'Where am I?':
-            getLocation(youAreHere)
-        else:
-            print('Didn\'t think of that option yet. Nice.')
 
 
 player = []
@@ -298,10 +163,17 @@ Location50 = Room('7 East, Stacks')
 Location51 = Room('7 South, Stacks')
 Location52 = Room('7 West, Stacks')
 
+all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7]
 
-def main():
-    Location1.entering()
-    room1()
+Location1_locations = [None, Location2, None, None]
+Location2_locations = [None, None, None, Location1]
+
+for rooms in Location1_locations:
+    Location1.add_directions(rooms)
+
+for rooms in Location2_locations:
+    Location2.add_directions(rooms)
+
 
 introduction()
 initialization()
