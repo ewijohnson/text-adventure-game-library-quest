@@ -50,6 +50,96 @@ class Room:
             elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
 
+    def whereCanIMove(self):
+        print('\nYou can move the following directions:')
+        if self.directions[0] != 'None':
+            print('north')
+        if self.directions[1] != 'None':
+            print('east')
+        if self.directions[2] != 'None':
+            print('south')
+        if self.directions[3] != 'None':
+            print('west')
+        if self.directions[4] != 'None':
+            print('up')
+        if self.directions[5] != 'None':
+            print('down')
+
+
+#This is a subclass of class Room, and it adds two additional parameters for moving up or down
+class ElevatorRoom(Room):
+
+    def move_floors(self):
+        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west', 'up', 'down'>: ")
+        if direction_input == 'north':
+            if self.directions[0] != 'None':
+                self.directions[0].entering()
+                getLocation(self.directions[0])
+                self.leaving()
+            elif self.directions[0] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+        elif direction_input == 'east':
+            if self.directions[1] != 'None':
+                self.directions[1].entering()
+                getLocation(self.directions[1])
+                self.leaving()
+            elif self.directions[1] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+        elif direction_input == 'south':
+            if self.directions[2] != 'None':
+                self.directions[2].entering()
+                getLocation(self.directions[2])
+                self.leaving()
+            elif self.directions[2] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+        elif direction_input == 'west':
+            if self.directions[3] != 'None':
+                self.directions[3].entering()
+                getLocation(self.directions[3])
+                self.leaving()
+            elif self.directions[3] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+        if direction_input == 'up':
+            if self.directions[4] != 'None':
+                self.directions[4].entering()
+                getLocation(self.directions[4])
+                self.leaving()
+            elif self.directions[4] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+        elif direction_input == 'down':
+            if self.directions[5] != 'None':
+                self.directions[5].entering()
+                getLocation(self.directions[5])
+                self.leaving()
+            elif self.directions[5] == 'None':
+                print("\nThat room doesn't exist. Try again.\n")
+
+
+#This function takes the instances of Room and ElevatorRoom and appends adjacent Locations to it, allowing for
+#   moving between the locations
+def appendAdjacentRoomsToLocations(infile, all_locations):
+    for location in all_locations:
+        line = infile.readline()
+        location = clean_rooms_file(line, location)
+
+
+#This function cleans the lines that are read in through appendAdjacentRoomsToLocation function
+def clean_rooms_file(line, location):
+    line = line.split()
+    line = line[2:]
+    line = ' '.join(line)
+    line = line.strip('[')
+    line = line.strip(']')
+    line = line.replace(',', '')
+    line = line.split()
+    for rooms in line:
+        if rooms != 'None':
+            rooms = eval(rooms)
+            location.add_directions(rooms)
+        else:
+            location.add_directions(rooms)
+    return location
+
 
 def introduction():
     print('This is the introduction!')
@@ -58,6 +148,12 @@ def introduction():
 def getLocation(place):
     currentLocation = place.getName()
     print(f'\nYou are currently in the {currentLocation}.')
+
+
+def getLocationHelp():
+    print("\nYou have a few options for actions.")
+    print("Enter one of the following:")
+    print("'move'\n'check items'\n'look around'\n'talk'\n'use item'\n'Where am I?'\n'Where can I move?'\n")
 
 
 def initialization_answer(choice):
@@ -90,10 +186,24 @@ def game_loop():
     for loc in all_locations:
         try:
             while loc.inRoom() is True:
-                query = input('What would you like to do? ')
-                if query == 'move':
-                    loc.move()
-                    game_loop()
+                query = input('\nWhat would you like to do? ')
+                query = query.lower()
+                query = query.strip('?')
+                #the 'help' query will allow the player to see all possible actions
+                if query == 'help':
+                    getLocationHelp()
+                elif query[:4] == 'move':
+                    #This checks to see if the current room is subclass ElevatorRoom or class Room
+                    if isinstance(loc, ElevatorRoom):
+                        #if class ElevatorRoom, there are more movement options (up or down, additionally)
+                        loc.move_floors()
+                        game_loop()
+                    elif isinstance(loc, Room):
+                        #if class is just Room, there are just the basic four movement options
+                        loc.move()
+                        game_loop()
+                elif query == 'where can i move':
+                    loc.whereCanIMove()
                 elif query == 'check items':
                     print('check items')
                 elif query == 'look around':
@@ -102,7 +212,7 @@ def game_loop():
                     print('talk to someone in current location')
                 elif query == 'use item':
                     print('use an item')
-                elif query == 'Where am I?':
+                elif query == 'where am i':
                     getLocation(loc)
                 else:
                     print('Didn\'t think of that option yet. Nice.')
@@ -117,52 +227,52 @@ Location3 = Room('Circulation Desk')
 Location4 = Room('Information Desk')
 Location5 = Room('Computer Room')
 Location6 = Room('Bathrooms, Ground Floor')
-Location7 = Room('Elevator Nook, Ground Floor')
-Location8 = Room('Elevator Nook, Basement')
+Location7 = ElevatorRoom('Elevator Nook, Ground Floor')
+Location8 = ElevatorRoom('Elevator Nook, Basement')
 Location9 = Room('East Basement')
 Location10 = Room('North Basement')
 Location11 = Room('West Basement')
 Location12 = Room('Bathrooms, Basement')
 Location13 = Room('Electrical Storage Closet')
-Location14 = Room('Elevator Nook, 2nd Floor')
+Location14 = ElevatorRoom('Elevator Nook, 2nd Floor')
 Location15 = Room('Hallway, 2nd Floor')
 Location16 = Room('Bathrooms, 2nd Floor')
 Location17 = Room('2 North, Stacks')
 Location18 = Room('2 East, Offices')
 Location19 = Room('2 South, Media Center')
 Location20 = Room('2 West, Cafe')
-Location21 = Room('Elevator Nook, 3rd Floor')
+Location21 = ElevatorRoom('Elevator Nook, 3rd Floor')
 Location22 = Room('Hallway, 3rd Floor')
 Location23 = Room('Bathrooms, 3rd Floor')
 Location24 = Room('3 North, Stacks')
 Location25 = Room('3 East, Offices')
 Location26 = Room('3 South, Stacks')
 Location27 = Room('3 West, Study Area')
-Location28 = Room('Elevator Nook, 4th Floor')
+Location28 = ElevatorRoom('Elevator Nook, 4th Floor')
 Location29 = Room('Hallway, 4th Floor')
 Location30 = Room('Bathrooms, 4th Floor')
 Location31 = Room('4 North, Stacks')
 Location32 = Room('4 East, Offices')
 Location33 = Room('4 South, Stacks')
 Location34 = Room('4 West, Stacks')
-Location35 = Room('Elevator Nook, 5th Floor')
+Location35 = ElevatorRoom('Elevator Nook, 5th Floor')
 Location36 = Room('Hallway, 5th Floor')
 Location37 = Room('Bathrooms, 5th Floor')
 Location38 = Room('5 North, Stacks')
 Location39 = Room('5 East, Offices')
 Location40 = Room('5 South, Collaborative Study Area')
 Location41 = Room('5 West, Lounge')
-Location42 = Room('Elevator Nook, 6th Floor')
+Location42 = ElevatorRoom('Elevator Nook, 6th Floor')
 Location43 = Room('Hallway, 6th Floor')
 Location44 = Room('Bathrooms, 6th Floor')
-Location45 = Room('6 North, Stacks')
-Location46 = Room('6 East, Stacks')
-Location47 = Room('6 South, Study Area')
-Location48 = Room('6 West, Stacks')
-Location49 = Room('7 North, Stacks')
-Location50 = Room('7 East, Stacks')
-Location51 = Room('7 South, Stacks')
-Location52 = Room('7 West, Stacks')
+Location45 = ElevatorRoom('6 North, Stacks')
+Location46 = ElevatorRoom('6 East, Stacks')
+Location47 = ElevatorRoom('6 South, Study Area')
+Location48 = ElevatorRoom('6 West, Stacks')
+Location49 = ElevatorRoom('7 North, Stacks')
+Location50 = ElevatorRoom('7 East, Stacks')
+Location51 = ElevatorRoom('7 South, Stacks')
+Location52 = ElevatorRoom('7 West, Stacks')
 
 all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7, Location8,
                  Location9, Location10, Location11, Location12, Location13, Location14, Location15, Location16,
@@ -172,23 +282,10 @@ all_locations = [Location1, Location2, Location3, Location4, Location5, Location
                  Location41, Location42, Location43, Location44, Location45, Location46, Location47, Location48,
                  Location49, Location50, Location51, Location52]
 
-location_count = 0
+
+#This links adjacent Locations to each Location, allowing for movement
 infile = open('adjacent_rooms_file.txt', 'r')
-for location in all_locations:
-    line = infile.readline()
-    line = line.split()
-    line = line[2:]
-    line = ' '.join(line)
-    line = line.strip('[')
-    line = line.strip(']')
-    line = line.replace(',', '')
-    line = line.split()
-    for rooms in line:
-        if rooms != 'None':
-            rooms = eval(rooms)
-            location.add_directions(rooms)
-        else:
-            location.add_directions(rooms)
+appendAdjacentRoomsToLocations(infile, all_locations)
 
 infile.close()
 
