@@ -49,6 +49,8 @@ class Room:
                 self.leaving()
             elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
+        else:
+            print("I didn't quite get that. Try again?")
 
     def whereCanIMove(self):
         print('\nYou can move the following directions:')
@@ -113,6 +115,8 @@ class ElevatorRoom(Room):
                 self.leaving()
             elif self.directions[5] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
+        else:
+            print("I didn't quite get that. Try again?")
 
 
 #This function takes the instances of Room and ElevatorRoom and appends adjacent Locations to it, allowing for
@@ -153,7 +157,7 @@ def getLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("'move'\n'check items'\n'look around'\n'talk'\n'use item'\n'Where am I?'\n'Where can I move?'\n")
+    print("'move'\n'check items'\n'look around'\n'talk'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
 
 
 def initialization_answer(choice):
@@ -197,12 +201,13 @@ def game_loop():
                     if isinstance(loc, ElevatorRoom):
                         #if class ElevatorRoom, there are more movement options (up or down, additionally)
                         loc.move_floors()
-                        game_loop()
+                        break
                     elif isinstance(loc, Room):
                         #if class is just Room, there are just the basic four movement options
                         loc.move()
-                        game_loop()
-                elif query == 'where can i move':
+                        break
+                #Where can I move?
+                elif query[:13] == 'where can i m':
                     loc.whereCanIMove()
                 elif query == 'check items':
                     print('check items')
@@ -214,6 +219,15 @@ def game_loop():
                     print('use an item')
                 elif query == 'where am i':
                     getLocation(loc)
+                elif query == 'quit':
+                    quitting_input = input("Are you sure? ")
+                    if quitting_input[0].lower() == 'y':
+                        game = False
+                        quit()
+                    elif quitting_input[0].lower() == 'n':
+                        break
+                    else:
+                        print("I didn't understand you.")
                 else:
                     print('Didn\'t think of that option yet. Nice.')
         except:
