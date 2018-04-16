@@ -1,11 +1,17 @@
+import sys
+
 class Room:
 
     def __init__(self, name):
         self.name = name
         self.directions = []
+        self.items = []
 
     def add_directions(self, direction):
         self.directions.append(direction)
+
+    def add_items(self, item):
+        self.items.append(item)
 
     def entering(self):
         self.enter = True
@@ -27,14 +33,14 @@ class Room:
                 getLocation(self.directions[0])
                 self.leaving()
             elif self.directions[0] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'east':
             if self.directions[1] != 'None':
                 self.directions[1].entering()
                 getLocation(self.directions[1])
                 self.leaving()
             elif self.directions[1] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'south':
             if self.directions[2] != 'None':
                 self.directions[2].entering()
@@ -101,7 +107,7 @@ class ElevatorRoom(Room):
                 self.leaving()
             elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.\n")
-        if direction_input == 'up':
+        elif direction_input == 'up':
             if self.directions[4] != 'None':
                 self.directions[4].entering()
                 getLocation(self.directions[4])
@@ -124,8 +130,8 @@ class ElevatorRoom(Room):
 def appendAdjacentRoomsToLocations(infile, all_locations):
     for location in all_locations:
         line = infile.readline()
-        location = clean_rooms_file(line, location)
-
+        line = clean_rooms_file(line, location)
+        loopFinalLocationAppend(line, location)
 
 #This function cleans the lines that are read in through appendAdjacentRoomsToLocation function
 def clean_rooms_file(line, location):
@@ -136,13 +142,17 @@ def clean_rooms_file(line, location):
     line = line.strip(']')
     line = line.replace(',', '')
     line = line.split()
+    return line
+
+
+#This function loops through the rooms in each cleaned line and adds the directions to each class instance
+def loopFinalLocationAppend(line, location):
     for rooms in line:
         if rooms != 'None':
             rooms = eval(rooms)
             location.add_directions(rooms)
         else:
             location.add_directions(rooms)
-    return location
 
 
 def introduction():
@@ -157,14 +167,14 @@ def getLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("'move'\n'check items'\n'look around'\n'talk'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
+    print("'move'\n'check items'\n'look around'\n'talk'\n'get item'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
 
 
 def initialization_answer(choice):
     if choice == 'y':
         main()
     elif choice == 'n':
-        quit()
+        sys.exit()
     else:
         opening_choice = input("I don't know what you want. Try again? Type 'yes' or 'no'. ")
         opening_choice = opening_choice[0].lower()
@@ -215,6 +225,8 @@ def game_loop():
                     print('Describe the settings of the room')
                 elif query == 'talk':
                     print('talk to someone in current location')
+                elif query == 'get item':
+                    print('get an item')
                 elif query == 'use item':
                     print('use an item')
                 elif query == 'where am i':
@@ -222,8 +234,9 @@ def game_loop():
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
-                        game = False
-                        quit()
+                        print("\nThanks for playing!")
+                        loc.leaving()
+                        sys.exit()
                     elif quitting_input[0].lower() == 'n':
                         break
                     else:
@@ -233,60 +246,59 @@ def game_loop():
         except:
             pass
 
-player = []
 
 Location1 = Room('Entrance')
 Location2 = Room('Public Reading Space')
-Location3 = Room('Circulation Desk')
-Location4 = Room('Information Desk')
-Location5 = Room('Computer Room')
-Location6 = Room('Bathrooms, Ground Floor')
-Location7 = ElevatorRoom('Elevator Nook, Ground Floor')
-Location8 = ElevatorRoom('Elevator Nook, Basement')
+Location3 = Room('Circulation Area')
+Location4 = Room('Information Area')
+Location5 = Room('Public Computer Room')
+Location6 = Room('Ground Floor Bathrooms')
+Location7 = ElevatorRoom('Ground Floor Elevator Nook')
+Location8 = ElevatorRoom('Basement Elevator Nook')
 Location9 = Room('East Basement')
 Location10 = Room('North Basement')
 Location11 = Room('West Basement')
-Location12 = Room('Bathrooms, Basement')
+Location12 = Room('Basement Bathrooms')
 Location13 = Room('Electrical Storage Closet')
-Location14 = ElevatorRoom('Elevator Nook, 2nd Floor')
-Location15 = Room('Hallway, 2nd Floor')
-Location16 = Room('Bathrooms, 2nd Floor')
-Location17 = Room('2 North, Stacks')
-Location18 = Room('2 East, Offices')
-Location19 = Room('2 South, Media Center')
-Location20 = Room('2 West, Cafe')
-Location21 = ElevatorRoom('Elevator Nook, 3rd Floor')
-Location22 = Room('Hallway, 3rd Floor')
-Location23 = Room('Bathrooms, 3rd Floor')
-Location24 = Room('3 North, Stacks')
-Location25 = Room('3 East, Offices')
-Location26 = Room('3 South, Stacks')
-Location27 = Room('3 West, Study Area')
-Location28 = ElevatorRoom('Elevator Nook, 4th Floor')
-Location29 = Room('Hallway, 4th Floor')
-Location30 = Room('Bathrooms, 4th Floor')
-Location31 = Room('4 North, Stacks')
-Location32 = Room('4 East, Offices')
-Location33 = Room('4 South, Stacks')
-Location34 = Room('4 West, Stacks')
-Location35 = ElevatorRoom('Elevator Nook, 5th Floor')
-Location36 = Room('Hallway, 5th Floor')
-Location37 = Room('Bathrooms, 5th Floor')
-Location38 = Room('5 North, Stacks')
-Location39 = Room('5 East, Offices')
-Location40 = Room('5 South, Collaborative Study Area')
-Location41 = Room('5 West, Lounge')
-Location42 = ElevatorRoom('Elevator Nook, 6th Floor')
-Location43 = Room('Hallway, 6th Floor')
-Location44 = Room('Bathrooms, 6th Floor')
-Location45 = ElevatorRoom('6 North, Stacks')
-Location46 = ElevatorRoom('6 East, Stacks')
-Location47 = ElevatorRoom('6 South, Study Area')
-Location48 = ElevatorRoom('6 West, Stacks')
-Location49 = ElevatorRoom('7 North, Stacks')
-Location50 = ElevatorRoom('7 East, Stacks')
-Location51 = ElevatorRoom('7 South, Stacks')
-Location52 = ElevatorRoom('7 West, Stacks')
+Location14 = ElevatorRoom('2nd Floor Elevator Nook')
+Location15 = Room('2nd Floor Hallway')
+Location16 = Room('2nd Floor Bathrooms')
+Location17 = Room('2nd Floor Stacks, North Tower')
+Location18 = Room('2nd Floor Offices')
+Location19 = Room('Media Center')
+Location20 = Room('Cafe')
+Location21 = ElevatorRoom('3rd Floor Elevator Nook')
+Location22 = Room('3rd Floor Hallway')
+Location23 = Room('3rd Floor Bathrooms')
+Location24 = Room('3rd Floor Stacks, North Tower')
+Location25 = Room('3rd Floor Offices')
+Location26 = Room('3rd Floor Stacks, South Tower')
+Location27 = Room('3rd Floor Study Area')
+Location28 = ElevatorRoom('4th Floor Elevator Nook')
+Location29 = Room('4th Floor Hallway')
+Location30 = Room('4th Floor Bathrooms')
+Location31 = Room('4th Floor Stacks, North Tower')
+Location32 = Room('4th Floor Offices')
+Location33 = Room('4th Floor Stacks, South Tower')
+Location34 = Room('4th Floor Stacks, West Tower')
+Location35 = ElevatorRoom('5th Floor Elevator Nook')
+Location36 = Room('5th Floor Hallway')
+Location37 = Room('5th Floor Bathrooms')
+Location38 = Room('5th Floor Stacks, North Tower')
+Location39 = Room('5th Floor Offices')
+Location40 = Room('5th Floor Study Area')
+Location41 = Room('Lounge')
+Location42 = ElevatorRoom('6th Floor Elevator Nook')
+Location43 = Room('6th Floor Hallway')
+Location44 = Room('6th Floor Bathrooms')
+Location45 = ElevatorRoom('6th Floor Stacks, North Tower')
+Location46 = ElevatorRoom('6th Floor Stacks, East Tower')
+Location47 = ElevatorRoom('6th Floor Study Area')
+Location48 = ElevatorRoom('6th Floor Stacks, West Tower')
+Location49 = ElevatorRoom('7th Floor Stacks, North Tower')
+Location50 = ElevatorRoom('7th Floor Stacks, East Tower')
+Location51 = ElevatorRoom('7th Floor Stacks, South Tower')
+Location52 = ElevatorRoom('7th Floor Stacks, West Tower')
 
 all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7, Location8,
                  Location9, Location10, Location11, Location12, Location13, Location14, Location15, Location16,
@@ -300,7 +312,6 @@ all_locations = [Location1, Location2, Location3, Location4, Location5, Location
 #This links adjacent Locations to each Location, allowing for movement
 infile = open('adjacent_rooms_file.txt', 'r')
 appendAdjacentRoomsToLocations(infile, all_locations)
-
 infile.close()
 
 introduction()
