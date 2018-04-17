@@ -47,14 +47,14 @@ class Room:
                 getLocation(self.directions[2])
                 self.leaving()
             elif self.directions[2] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'west':
             if self.directions[3] != 'None':
                 self.directions[3].entering()
                 getLocation(self.directions[3])
                 self.leaving()
             elif self.directions[3] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         else:
             print("I didn't quite get that. Try again?")
 
@@ -85,44 +85,61 @@ class ElevatorRoom(Room):
                 getLocation(self.directions[0])
                 self.leaving()
             elif self.directions[0] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'east':
             if self.directions[1] != 'None':
                 self.directions[1].entering()
                 getLocation(self.directions[1])
                 self.leaving()
             elif self.directions[1] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'south':
             if self.directions[2] != 'None':
                 self.directions[2].entering()
                 getLocation(self.directions[2])
                 self.leaving()
             elif self.directions[2] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'west':
             if self.directions[3] != 'None':
                 self.directions[3].entering()
                 getLocation(self.directions[3])
                 self.leaving()
             elif self.directions[3] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'up':
             if self.directions[4] != 'None':
                 self.directions[4].entering()
                 getLocation(self.directions[4])
                 self.leaving()
             elif self.directions[4] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'down':
             if self.directions[5] != 'None':
                 self.directions[5].entering()
                 getLocation(self.directions[5])
                 self.leaving()
             elif self.directions[5] == 'None':
-                print("\nThat room doesn't exist. Try again.\n")
+                print("\nThat room doesn't exist. Try again.")
         else:
             print("I didn't quite get that. Try again?")
+
+
+#This function reads in a text file to create all instances of Room and ElevatorRoom
+def createRoomInstances(infile_locations, all_locations):
+    text_roomCreation = infile_locations.readlines()
+    for line in text_roomCreation:
+        line = line.split()
+        if line[2] == 'Room':
+            sliced_line = line[3:]
+            sliced_line = " ".join(sliced_line)
+            instanceRoom = Room(sliced_line)
+            all_locations.append(instanceRoom)
+        elif line[2] == 'ElevatorRoom':
+            sliced_line = line[3:]
+            sliced_line = " ".join(sliced_line)
+            instanceRoom = ElevatorRoom(sliced_line)
+            all_locations.append(instanceRoom)
 
 
 #This function takes the instances of Room and ElevatorRoom and appends adjacent Locations to it, allowing for
@@ -138,8 +155,8 @@ def clean_rooms_file(line, location):
     line = line.split()
     line = line[2:]
     line = ' '.join(line)
-    line = line.strip('[')
-    line = line.strip(']')
+    #line = line.strip('[')
+    #line = line.strip(']')
     line = line.replace(',', '')
     line = line.split()
     return line
@@ -189,7 +206,7 @@ def initialization():
 
 def main():
     game = True
-    loc = Location1
+    loc = all_locations[0]
     loc.entering()
     getLocation(loc)
     while game is True:
@@ -247,67 +264,11 @@ def game_loop():
             pass
 
 
-Location1 = Room('Entrance')
-Location2 = Room('Public Reading Space')
-Location3 = Room('Circulation Area')
-Location4 = Room('Information Area')
-Location5 = Room('Public Computer Room')
-Location6 = Room('Ground Floor Bathrooms')
-Location7 = ElevatorRoom('Ground Floor Elevator Nook')
-Location8 = ElevatorRoom('Basement Elevator Nook')
-Location9 = Room('East Basement')
-Location10 = Room('North Basement')
-Location11 = Room('West Basement')
-Location12 = Room('Basement Bathrooms')
-Location13 = Room('Electrical Storage Closet')
-Location14 = ElevatorRoom('2nd Floor Elevator Nook')
-Location15 = Room('2nd Floor Hallway')
-Location16 = Room('2nd Floor Bathrooms')
-Location17 = Room('2nd Floor Stacks, North Tower')
-Location18 = Room('2nd Floor Offices')
-Location19 = Room('Media Center')
-Location20 = Room('Cafe')
-Location21 = ElevatorRoom('3rd Floor Elevator Nook')
-Location22 = Room('3rd Floor Hallway')
-Location23 = Room('3rd Floor Bathrooms')
-Location24 = Room('3rd Floor Stacks, North Tower')
-Location25 = Room('3rd Floor Offices')
-Location26 = Room('3rd Floor Stacks, South Tower')
-Location27 = Room('3rd Floor Study Area')
-Location28 = ElevatorRoom('4th Floor Elevator Nook')
-Location29 = Room('4th Floor Hallway')
-Location30 = Room('4th Floor Bathrooms')
-Location31 = Room('4th Floor Stacks, North Tower')
-Location32 = Room('4th Floor Offices')
-Location33 = Room('4th Floor Stacks, South Tower')
-Location34 = Room('4th Floor Stacks, West Tower')
-Location35 = ElevatorRoom('5th Floor Elevator Nook')
-Location36 = Room('5th Floor Hallway')
-Location37 = Room('5th Floor Bathrooms')
-Location38 = Room('5th Floor Stacks, North Tower')
-Location39 = Room('5th Floor Offices')
-Location40 = Room('5th Floor Study Area')
-Location41 = Room('Lounge')
-Location42 = ElevatorRoom('6th Floor Elevator Nook')
-Location43 = Room('6th Floor Hallway')
-Location44 = Room('6th Floor Bathrooms')
-Location45 = ElevatorRoom('6th Floor Stacks, North Tower')
-Location46 = ElevatorRoom('6th Floor Stacks, East Tower')
-Location47 = ElevatorRoom('6th Floor Study Area')
-Location48 = ElevatorRoom('6th Floor Stacks, West Tower')
-Location49 = ElevatorRoom('7th Floor Stacks, North Tower')
-Location50 = ElevatorRoom('7th Floor Stacks, East Tower')
-Location51 = ElevatorRoom('7th Floor Stacks, South Tower')
-Location52 = ElevatorRoom('7th Floor Stacks, West Tower')
-
-all_locations = [Location1, Location2, Location3, Location4, Location5, Location6, Location7, Location8,
-                 Location9, Location10, Location11, Location12, Location13, Location14, Location15, Location16,
-                 Location17, Location18, Location19, Location20, Location21, Location22, Location23, Location24,
-                 Location25, Location26, Location27, Location28, Location29, Location30, Location31, Location32,
-                 Location33, Location34, Location35, Location36, Location37, Location38, Location39, Location40,
-                 Location41, Location42, Location43, Location44, Location45, Location46, Location47, Location48,
-                 Location49, Location50, Location51, Location52]
-
+#This creates all instances of Room and ElevatorRoom
+all_locations = []
+infile_locations = open('create_all_rooms.txt', 'r')
+createRoomInstances(infile_locations, all_locations)
+infile_locations.close()
 
 #This links adjacent Locations to each Location, allowing for movement
 infile = open('adjacent_rooms_file.txt', 'r')
