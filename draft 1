@@ -1,4 +1,6 @@
 import sys
+import random
+
 
 class Room:
 
@@ -32,6 +34,9 @@ class Room:
                 self.directions[0].entering()
                 getLocation(self.directions[0])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[0] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'east':
@@ -39,6 +44,9 @@ class Room:
                 self.directions[1].entering()
                 getLocation(self.directions[1])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[1] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'south':
@@ -46,6 +54,9 @@ class Room:
                 self.directions[2].entering()
                 getLocation(self.directions[2])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[2] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'west':
@@ -53,6 +64,9 @@ class Room:
                 self.directions[3].entering()
                 getLocation(self.directions[3])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         else:
@@ -84,6 +98,9 @@ class ElevatorRoom(Room):
                 self.directions[0].entering()
                 getLocation(self.directions[0])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[0] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'east':
@@ -91,6 +108,9 @@ class ElevatorRoom(Room):
                 self.directions[1].entering()
                 getLocation(self.directions[1])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[1] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'south':
@@ -98,6 +118,9 @@ class ElevatorRoom(Room):
                 self.directions[2].entering()
                 getLocation(self.directions[2])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[2] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'west':
@@ -105,6 +128,9 @@ class ElevatorRoom(Room):
                 self.directions[3].entering()
                 getLocation(self.directions[3])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[3] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'up':
@@ -112,6 +138,9 @@ class ElevatorRoom(Room):
                 self.directions[4].entering()
                 getLocation(self.directions[4])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[4] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         elif direction_input == 'down':
@@ -119,10 +148,66 @@ class ElevatorRoom(Room):
                 self.directions[5].entering()
                 getLocation(self.directions[5])
                 self.leaving()
+                patron_num = random.randint(1,20)
+                if patron_num <= 15:
+                    patronEncounter()
             elif self.directions[5] == 'None':
                 print("\nThat room doesn't exist. Try again.")
         else:
             print("I didn't quite get that. Try again?")
+
+
+class Player:
+
+    def __init__(self, name, stats, stamina, items):
+        self.name = name
+        self.stats = stats
+        self.stealth = stats[0]
+        self.magic = stats[1]
+        self.bravery = stats[2]
+        self.stamina = stamina
+        self.items = []
+
+    def getName(self):
+        return self.name
+
+    def getStealth(self):
+        return self.stealth
+
+    def getMagic(self):
+        return self.magic
+
+    def getBravery(self):
+        return self.bravery
+
+    def getStamina(self):
+        return self.stamina
+
+    def getItems(self):
+        return self.items
+
+
+class Patron:
+
+    def __init__(self, stats, stamina):
+        self.stats = stats
+        self.stealth = stats[0]
+        self.magic = stats[1]
+        self.bravery = stats[2]
+        self.stamina = stamina
+
+    def getStealth(self):
+        return self.stealth
+
+    def getMagic(self):
+        return self.magic
+
+    def getBravery(self):
+        return self.bravery
+
+    def getStamina(self):
+        return self.stamina
+
 
 
 #This function reads in a text file to create all instances of Room and ElevatorRoom
@@ -185,6 +270,75 @@ def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
     print("'move'\n'check items'\n'look around'\n'talk'\n'get item'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
+
+
+def encounter_sneak(rand_patron, player_stealth, patron_stealth):
+    random_stealth = random.randint(0,10)
+    if player_stealth > patron_stealth:
+        stealth_prob = player_stealth - patron_stealth
+        if stealth_prob > random_stealth:
+            print('\nYou successfully snuck away!')
+            print("\nYour stealth is now at", update_sneak(1))
+            return
+        elif stealth_prob <= random_stealth:
+            print("\nYou weren't stealthy enough this time!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron)
+    elif player_stealth <= patron_stealth:
+        stealth_prob = 1
+        if stealth_prob > random_stealth:
+            print('\nYou successfully snuck away!')
+            print("\nYour stealth is now at", update_sneak(1))
+            return
+        elif stealth_prob <= patron_stealth:
+            print("\nYou weren't stealthy enough this time!")
+            print("Your stamina has decreased! It is now at", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron)
+
+
+def encounter_magic():
+    return
+
+
+def encounter_bravery():
+    return
+
+
+def patronEncounter():
+    saved_stamina = player.getStamina()
+    patron_infile = open('patron_lines.txt', 'r')
+    patron_text = patron_infile.readlines()
+    patron_infile.close()
+    rand_patron_line_num = random.randint(1, 40)
+    rand_patron = Patron([random.randint(1, 10), random.randint(1, 10), random.randint(1, 10)], random.randint(10, 25))
+    print('\nA library patron appears!')
+    print(patron_text[rand_patron_line_num - 1])
+    patronEncounterLoop(rand_patron)
+    player.stamina = saved_stamina
+    print("Your stamina is now at", update_stamina(1))
+
+
+def patronEncounterLoop(rand_patron):
+    encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron"> ')
+    if encounter_input[:5] == 'sneak':
+        encounter_sneak(rand_patron, (player.stealth), (rand_patron.stealth))
+        return
+    elif encounter_input == 'use magic':
+        encounter_magic()
+    elif encounter_input == 'help patron':
+        encounter_bravery()
+    else:
+        print("\nYou can't do that now. Try something else.\n")
+        patronEncounterLoop(rand_patron)
+
+
+def update_stamina(num):
+    player.stamina = player.stamina + num
+    return player.getStamina()
+
+def update_sneak(num):
+    player.stealth = player.stealth + num
+    return player.getStealth()
 
 
 def initialization_answer(choice):
@@ -263,6 +417,8 @@ def game_loop():
         except:
             pass
 
+
+player = Player('Eric', [8, 5, 5], 10, [])
 
 #This creates all instances of Room and ElevatorRoom
 all_locations = []
