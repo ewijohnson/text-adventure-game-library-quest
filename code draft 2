@@ -259,6 +259,23 @@ def introduction():
     print('This is the introduction!')
 
 
+def characterInitialization():
+    name_input = input('What is your name? ')
+    role_input = input('Would you like to start the game with more stealth, magic, or bravery? ')
+    if role_input == 'stealth':
+        player = Player(name_input, [8, 5, 5], 8, [])
+        return player
+    elif role_input == 'magic':
+        player = Player(name_input, [5, 8, 5], 8, [])
+        return player
+    elif role_input == 'bravery':
+        player = Player(name_input, [5, 5, 8], 8, [])
+        return player
+    else:
+        print('Excuse me? Please try that again.')
+        characterInitialization()
+
+
 def getLocation(place):
     currentLocation = place.getName()
     print(f'\nYou are currently in the {currentLocation}.')
@@ -304,7 +321,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic):
             return
         elif magic_prob <= random_magic:
             print("\nYour magic didn't work!")
-            print("Your stamina had decreased! It is now at ", update_stamina(-1), '\n')
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
             patronEncounterLoop(rand_patron)
     elif player_magic <= patron_magic:
         magic_prob = 1
@@ -314,12 +331,32 @@ def encounter_magic(rand_patron, player_magic, patron_magic):
             return
         elif magic_prob <= patron_magic:
             print("\nYour magic didn't work!")
-            print("Your stamina had decreased! It is now at ", update_stamina(-1), '\n')
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
             patronEncounterLoop(rand_patron)
 
 
 def encounter_bravery(rand_patron, player_bravery, patron_bravery):
-    return
+    random_bravery = random.randint(0, 10)
+    if player_bravery > patron_bravery:
+        bravery_prob = player_bravery - patron_bravery
+        if bravery_prob > random_bravery:
+            print('\nYou successfully helped the patron!')
+            print("\nYour bravery level is now", update_bravery(1))
+            return
+        elif bravery_prob <= random_bravery:
+            print("\nYou didn't help the patron!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron)
+    elif player_bravery <= patron_bravery:
+        bravery_prob = 1
+        if bravery_prob > random_bravery:
+            print('\nYou successfully helped the patron!')
+            print("\nYour bravery level is now", update_bravery(1))
+            return
+        elif bravery_prob <= patron_bravery:
+            print("\nYou didn't help the patron!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron)
 
 
 def patronEncounter():
@@ -455,8 +492,6 @@ def game_loop():
             pass
 
 
-player = Player('Eric', [8, 8, 8], 2, [])
-
 # This creates all instances of Room and ElevatorRoom
 all_locations = []
 infile_locations = open('create_all_rooms.txt', 'r')
@@ -468,5 +503,9 @@ infile = open('adjacent_rooms_file.txt', 'r')
 appendAdjacentRoomsToLocations(infile, all_locations)
 infile.close()
 
+
 introduction()
+player = characterInitialization()
+print("Welcome, " + player.getName() + ". " + "Your starting stats are: ")
+print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
 initialization()
