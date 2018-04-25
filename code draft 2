@@ -161,10 +161,12 @@ def loopFinalLocationAppend(line, location):
             location.add_directions(rooms)
 
 
+# This function prints off the introduction and sets the stage for the plot
 def introduction():
     print('This is the introduction!')
 
 
+# This function initializes the player's character at the beginning, granting a slight advantage in one of three categories
 def characterInitialization():
     name_input = input('What is your name? ')
     role_input = input('Would you like to start the game with more stealth, magic, or bravery? ')
@@ -182,38 +184,62 @@ def characterInitialization():
         characterInitialization()
 
 
+# This function tells the player where they currently are
 def getLocation(place):
     currentLocation = place.getName()
     print(f'\nYou are currently in the {currentLocation}.')
 
 
+# This function provides the options that a player has 
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
     print("'move'\n'check items'\n'look around'\n'talk'\n'get item'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
 
 
+# This gets the index number of the list of directions, allowing the change location function to work for all six directions
 def direction_input_function(direction, loc_room_loc):
     direction_list = ['north', 'east', 'south', 'west', 'up', 'down']
     dir_num = direction_list.index(direction)
     change_location(dir_num, loc_room_loc)
 
 
+# This function handles the actions when the player moves from location to location
 def change_location(dir_index, loc_self):
     if loc_self.directions[dir_index] != 'None':
+        # This enters the new location, setting it to True
         loc_self.directions[dir_index].entering()
+        # This prints off the location as the player enters it
         getLocation(loc_self.directions[dir_index])
+        # This leaves the old location, setting it back to False
         loc_self.leaving()
-        patron_num = random.randint(1, 20)
-        if patron_num <= 15:
-            patronEncounter()
+        # This part of the function prepares the parameters for random patron stats, based on the player's level
+        patron_num = random.randint(1, 40)
+        if player.stamina <= 10:
+            if patron_num <= 20:
+                patronEncounter(1, 10, 10, 25)
+        elif 10 < player.stamina <= 20:
+            if patron_num <= 25:
+                patronEncounter(5, 20, 15, 30)
+        elif 20 < player.stamina <= 30:
+            if patron_num <= 30:
+                patronEncounter(10, 30, 25, 35)
+        elif 30 < player.stamina <= 40:
+            if patron_num <= 30:
+                patronEncounter(15, 40, 35, 45)
+        elif 40 < player.stamina <= 50:
+            if patron_num <= 35:
+                patronEncounter(25, 50, 45, 55)
     elif loc_self.directions[dir_index] == 'None':
         print("\nThat room doesn't exist. Try again.")
 
 
+# This function provides the mechanisms of action for when a player tries to use Stealth to handle a patron encounter
 def encounter_sneak(rand_patron, player_stealth, patron_stealth):
+    # Stealth probability is randomly selected, so different encounters are different difficulties 
     random_stealth = random.randint(0, 10)
     if player_stealth > patron_stealth:
+        # Player stealth is compared to patron stealth to get the difference
         stealth_prob = player_stealth - patron_stealth
         if stealth_prob > random_stealth:
             print('\nYou successfully snuck away!')
@@ -223,6 +249,7 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth):
             print("\nYou weren't stealthy enough!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
             patronEncounterLoop(rand_patron)
+    # If player stealth is lower than patron stealth, player now has only a 10% chance of winning the encounter this way
     elif player_stealth <= patron_stealth:
         stealth_prob = 1
         if stealth_prob > random_stealth:
@@ -235,6 +262,7 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth):
             patronEncounterLoop(rand_patron)
 
 
+# Just like the stealth encounter function above, but for using Magic
 def encounter_magic(rand_patron, player_magic, patron_magic):
     random_magic = random.randint(0, 10)
     if player_magic > patron_magic:
@@ -259,6 +287,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic):
             patronEncounterLoop(rand_patron)
 
 
+# Just like the stealth and magic encounters above, but for using Bravery
 def encounter_bravery(rand_patron, player_bravery, patron_bravery):
     random_bravery = random.randint(0, 10)
     if player_bravery > patron_bravery:
@@ -283,20 +312,27 @@ def encounter_bravery(rand_patron, player_bravery, patron_bravery):
             patronEncounterLoop(rand_patron)
 
 
-def patronEncounter():
+# This function creates instances of class Patron, with random stats based on the player's level
+def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStaminaLower, randPatronStaminaUpper):
+    # This saves the player's stamina and remembers it for use after the patron encounter
     saved_stamina = player.getStamina()
     patron_infile = open('patron_lines.txt', 'r')
     patron_text = patron_infile.readlines()
     patron_infile.close()
     rand_patron_line_num = random.randint(1, 40)
-    rand_patron = Patron([random.randint(1, 10), random.randint(1, 10), random.randint(1, 10)], random.randint(10, 25))
+    rand_patron = Patron([random.randint(randPatronStatsLower, randPatronStatsUpper), random.randint(randPatronStatsLower,
+                                                                                                     randPatronStatsUpper),
+                          random.randint(randPatronStatsLower, randPatronStatsUpper)], random.randint(randPatronStaminaLower,
+                                                                                                      randPatronStatsUpper))
     print('\nA library patron appears!')
     print(patron_text[rand_patron_line_num - 1])
     patronEncounterLoop(rand_patron)
+    # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter 
     player.stamina = saved_stamina
     print("Your stamina is now at", update_stamina(1))
 
 
+# This function sets up the encounter with patrons, getting input from the player 
 def patronEncounterLoop(rand_patron):
     encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron"> ')
     if encounter_input[:5] == 'sneak':
@@ -313,6 +349,7 @@ def patronEncounterLoop(rand_patron):
         patronEncounterLoop(rand_patron)
 
 
+# Updates stamina, both for increasing it after winning a patron encounter, and decreasing it during the encounter
 def update_stamina(num):
     player.stamina += num
     if player.stamina == 0:
@@ -322,21 +359,25 @@ def update_stamina(num):
         return player.getStamina()
 
 
+# Updates player's Stealth stat after winning an encounter
 def update_sneak(num):
     player.stealth += num
     return player.getStealth()
 
 
+# Updates player's Magic stat after winning an encounter
 def update_magic(num):
     player.magic += num
     return player.getMagic()
 
 
+# Updates player's Bravery stat after winning an encounter
 def update_bravery(num):
     player.bravery += num
     return player.getBravery()
 
 
+# Analyzes player input from initialization, thereby beginning the game or exiting
 def initialization_answer(choice):
     if choice == 'y':
         main()
@@ -349,12 +390,14 @@ def initialization_answer(choice):
         initialization_answer(opening_choice)
 
 
+# Asks the player if they would like to enter the library and begin the game
 def initialization():
     opening_choice = input("Would you like to enter the library? ")
     opening_choice = opening_choice[0].lower()
     initialization_answer(opening_choice)
 
 
+# Sets up the first location and primes the beginning of the game_loop
 def main():
     game = True
     loc = all_locations[0]
@@ -364,9 +407,13 @@ def main():
         game_loop()
 
 
+# The heart of the game, where all other functions come from, lead to, or return to
 def game_loop():
+    # Loops through each location one by one. This allows for distinct actions to be done in each of the 52 locations
     for loc in all_locations:
         try:
+            # This is changed for each location through the move() and move_floors() functions, with the self.entering() 
+            #     and self.leaving() methods
             while loc.inRoom() is True:
                 query = input('\nWhat would you like to do? ')
                 query = query.lower()
@@ -402,6 +449,7 @@ def game_loop():
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
+                        # raises RuntimeError and jumps to the except loop, which then uses sys.exit() to leave the game
                         print("\nThanks for playing!")
                         raise RuntimeError
                     elif quitting_input[0].lower() == 'n':
@@ -427,7 +475,7 @@ infile = open('adjacent_rooms_file.txt', 'r')
 appendAdjacentRoomsToLocations(infile, all_locations)
 infile.close()
 
-
+# The game is called and run from here
 introduction()
 player = characterInitialization()
 print("Welcome, " + player.getName() + ". " + "Your starting stats are: ")
