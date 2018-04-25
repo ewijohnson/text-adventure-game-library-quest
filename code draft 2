@@ -27,48 +27,11 @@ class Room:
     def getName(self):
         return self.name
 
-    def move(self):
+    def move(self, loc_room):
         direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
-        if direction_input == 'north':
-            if self.directions[0] != 'None':
-                self.directions[0].entering()
-                getLocation(self.directions[0])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[0] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'east':
-            if self.directions[1] != 'None':
-                self.directions[1].entering()
-                getLocation(self.directions[1])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[1] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'south':
-            if self.directions[2] != 'None':
-                self.directions[2].entering()
-                getLocation(self.directions[2])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[2] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'west':
-            if self.directions[3] != 'None':
-                self.directions[3].entering()
-                getLocation(self.directions[3])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[3] == 'None':
-                print("\nThat room doesn't exist. Try again.")
+        move_list = ['north', 'east', 'south', 'west']
+        if direction_input in move_list:
+            direction_input_function(direction_input, loc_room)
         else:
             print("I didn't quite get that. Try again?")
 
@@ -91,68 +54,11 @@ class Room:
 #This is a subclass of class Room, and it adds two additional parameters for moving up or down
 class ElevatorRoom(Room):
 
-    def move_floors(self):
+    def move_floors(self, loc_room):
         direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west', 'up', 'down'>: ")
-        if direction_input == 'north':
-            if self.directions[0] != 'None':
-                self.directions[0].entering()
-                getLocation(self.directions[0])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[0] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'east':
-            if self.directions[1] != 'None':
-                self.directions[1].entering()
-                getLocation(self.directions[1])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[1] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'south':
-            if self.directions[2] != 'None':
-                self.directions[2].entering()
-                getLocation(self.directions[2])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[2] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'west':
-            if self.directions[3] != 'None':
-                self.directions[3].entering()
-                getLocation(self.directions[3])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[3] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'up':
-            if self.directions[4] != 'None':
-                self.directions[4].entering()
-                getLocation(self.directions[4])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[4] == 'None':
-                print("\nThat room doesn't exist. Try again.")
-        elif direction_input == 'down':
-            if self.directions[5] != 'None':
-                self.directions[5].entering()
-                getLocation(self.directions[5])
-                self.leaving()
-                patron_num = random.randint(1,20)
-                if patron_num <= 15:
-                    patronEncounter()
-            elif self.directions[5] == 'None':
-                print("\nThat room doesn't exist. Try again.")
+        move_floors_list = ['north', 'east', 'south', 'west', 'up', 'down']
+        if direction_input in move_floors_list:
+            direction_input_function(direction_input, loc_room)
         else:
             print("I didn't quite get that. Try again?")
 
@@ -285,6 +191,24 @@ def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
     print("'move'\n'check items'\n'look around'\n'talk'\n'get item'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
+
+
+def direction_input_function(direction, loc_room_loc):
+    direction_list = ['north', 'east', 'south', 'west', 'up', 'down']
+    dir_num = direction_list.index(direction)
+    change_location(dir_num, loc_room_loc)
+
+
+def change_location(dir_index, loc_self):
+    if loc_self.directions[dir_index] != 'None':
+        loc_self.directions[dir_index].entering()
+        getLocation(loc_self.directions[dir_index])
+        loc_self.leaving()
+        patron_num = random.randint(1, 20)
+        if patron_num <= 15:
+            patronEncounter()
+    elif loc_self.directions[dir_index] == 'None':
+        print("\nThat room doesn't exist. Try again.")
 
 
 def encounter_sneak(rand_patron, player_stealth, patron_stealth):
@@ -454,11 +378,11 @@ def game_loop():
                     # This checks to see if the current room is subclass ElevatorRoom or class Room
                     if isinstance(loc, ElevatorRoom):
                         # if class ElevatorRoom, there are more movement options (up or down, additionally)
-                        loc.move_floors()
+                        loc.move_floors(loc)
                         break
                     elif isinstance(loc, Room):
                         # if class is just Room, there are just the basic four movement options
-                        loc.move()
+                        loc.move(loc)
                         break
                 # Where can I move?
                 elif query[:13] == 'where can i m':
