@@ -27,6 +27,11 @@ class Room:
     def getName(self):
         return self.name
 
+    def getItem(self):
+        for item in self.items:
+            item_name = item.getItemName()
+            return item_name
+
     def move(self, loc_room):
         direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
         move_list = ['north', 'east', 'south', 'west']
@@ -72,7 +77,7 @@ class Player:
         self.magic = stats[1]
         self.bravery = stats[2]
         self.stamina = stamina
-        self.items = []
+        self.itemlist = []
 
     def getName(self):
         return self.name
@@ -89,8 +94,17 @@ class Player:
     def getStamina(self):
         return self.stamina
 
-    def getItems(self):
-        return self.items
+    def pickUpItem(self, location):
+        self.itemlist.append(location.items)
+        print(f'You picked up a {location.getItem()}.')
+
+    def myItems(self):
+        all_my_item_names = []
+        for item in self.itemlist:
+            item_name = item[0].getItemName()
+            all_my_item_names.append(item_name)
+        all_my_item_names = ", ".join(all_my_item_names)
+        print(f'You are currently holding\n{all_my_item_names}.')
 
 
 class Patron:
@@ -113,6 +127,56 @@ class Patron:
 
     def getStamina(self):
         return self.stamina
+
+
+class Item:
+
+    def __init__(self, name):
+        self.name = name
+
+    def getItemName(self):
+        return self.name
+
+
+class Potion(Item):
+
+    def potionFunction(self, potion):
+        self.potion = potion
+
+
+class KeyItem(Item):
+
+    def magicBooks(self, books):
+        self.books = books
+
+
+def createItemInstances(infile_items, all_locations, all_items):
+    text_itemCreations = infile_items.readlines()
+    for line in text_itemCreations:
+        line = line.split()
+        if line[2] == 'Potion':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instancePotion = Potion(item_name)
+            all_items.append(instancePotion)
+        elif line[2] == 'KeyItem':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instanceKeyItem = KeyItem(item_name)
+            all_items.append(instanceKeyItem)
+        elif line[2] == 'Item':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instanceItem = Item(item_name)
+            all_items.append(instanceItem)
+    appendItemstoLocations(all_items, all_locations)
+
+
+def appendItemstoLocations(all_items, all_locations):
+    for item in all_items:
+        item_index_num = all_items.index(item)
+        location = all_locations[item_index_num]
+        location.add_items(item)
 
 
 # This function reads in a text file to create all instances of Room and ElevatorRoom
@@ -190,7 +254,7 @@ def getLocation(place):
     print(f'\nYou are currently in the {currentLocation}.')
 
 
-# This function provides the options that a player has 
+# This function provides the options that a player has
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
@@ -236,7 +300,7 @@ def change_location(dir_index, loc_self):
 
 # This function provides the mechanisms of action for when a player tries to use Stealth to handle a patron encounter
 def encounter_sneak(rand_patron, player_stealth, patron_stealth):
-    # Stealth probability is randomly selected, so different encounters are different difficulties 
+    # Stealth probability is randomly selected, so different encounters are different difficulties
     random_stealth = random.randint(0, 10)
     if player_stealth > patron_stealth:
         # Player stealth is compared to patron stealth to get the difference
@@ -327,12 +391,12 @@ def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStamin
     print('\nA library patron appears!')
     print(patron_text[rand_patron_line_num - 1])
     patronEncounterLoop(rand_patron)
-    # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter 
+    # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter
     player.stamina = saved_stamina
     print("Your stamina is now at", update_stamina(1))
 
 
-# This function sets up the encounter with patrons, getting input from the player 
+# This function sets up the encounter with patrons, getting input from the player
 def patronEncounterLoop(rand_patron):
     encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron"> ')
     if encounter_input[:5] == 'sneak':
@@ -412,9 +476,10 @@ def game_loop():
     # Loops through each location one by one. This allows for distinct actions to be done in each of the 52 locations
     for loc in all_locations:
         try:
-            # This is changed for each location through the move() and move_floors() functions, with the self.entering() 
+            # This is changed for each location through the move() and move_floors() functions, with the self.entering()
             #     and self.leaving() methods
             while loc.inRoom() is True:
+                itemPickupPermission = loc.getItem()
                 query = input('\nWhat would you like to do? ')
                 query = query.lower()
                 query = query.strip('?')
@@ -434,14 +499,44 @@ def game_loop():
                 # Where can I move?
                 elif query[:13] == 'where can i m':
                     loc.whereCanIMove()
-                elif query == 'check items':
-                    print('check items')
                 elif query == 'look around':
                     print('Describe the settings of the room')
                 elif query == 'talk':
                     print('talk to someone in current location')
-                elif query == 'get item':
-                    print('get an item')
+                elif query == 'get some':
+                    print('got some')
+                elif query == 'get stamina potion':
+                    if itemPickupPermission == 'Stamina Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get stealth potion':
+                    if itemPickupPermission == 'Stealth Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get magic potion':
+                    if itemPickupPermission == 'Magic Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get bravery potion':
+                    if itemPickupPermission == 'Bravery Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get escape book':
+                    if itemPickupPermission == 'Escape Book':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get magic book':
+                    if 'Magic Book' in itemPickupPermission:
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'check items':
+                    player.myItems()
                 elif query == 'use item':
                     print('use an item')
                 elif query == 'where am i':
@@ -474,6 +569,12 @@ infile_locations.close()
 infile = open('adjacent_rooms_file.txt', 'r')
 appendAdjacentRoomsToLocations(infile, all_locations)
 infile.close()
+
+
+all_items = []
+infile_items = open('items_in_rooms_file.txt', 'r')
+createItemInstances(infile_items, all_locations, all_items)
+infile_items.close()
 
 # The game is called and run from here
 introduction()
