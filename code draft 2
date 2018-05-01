@@ -104,8 +104,23 @@ class Player:
             item_name = item[0].getItemName()
             all_my_item_names.append(item_name)
         all_my_item_names = ", ".join(all_my_item_names)
-        print(f'You are currently holding\n{all_my_item_names}.')
+        print(f'You are currently holding:\n{all_my_item_names}')
 
+    def useItem(self):
+        self.myItems()
+        itemQuery = input('What would you like to use? ')
+        if itemQuery == 'stamina potion':
+            pass
+        elif itemQuery == 'stealth potion':
+            pass
+        elif itemQuery == 'magic potion':
+            pass
+        elif itemQuery == 'bravery potion':
+            pass
+        elif itemQuery == 'escape book':
+            pass
+        elif 'magic book' in itemQuery:
+            pass
 
 class Patron:
 
@@ -258,7 +273,8 @@ def getLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("'move'\n'check items'\n'look around'\n'talk'\n'get item'\n'use item'\n'Where am I?'\n'Where can I move?'\n'quit'\n")
+    print("""'move'\n'check items'\n'look around'\n'talk'\n'get [item name]'\n'use item'\n'Where am I?'\n\
+'Where can I move?'\n'quit'""")
 
 
 # This gets the index number of the list of directions, allowing the change location function to work for all six directions
@@ -299,7 +315,7 @@ def change_location(dir_index, loc_self):
 
 
 # This function provides the mechanisms of action for when a player tries to use Stealth to handle a patron encounter
-def encounter_sneak(rand_patron, player_stealth, patron_stealth):
+def encounter_sneak(rand_patron, player_stealth, patron_stealth, saved_stealth, saved_magic, saved_bravery):
     # Stealth probability is randomly selected, so different encounters are different difficulties
     random_stealth = random.randint(0, 10)
     if player_stealth > patron_stealth:
@@ -307,12 +323,13 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth):
         stealth_prob = player_stealth - patron_stealth
         if stealth_prob > random_stealth:
             print('\nYou successfully snuck away!')
-            print("\nYour stealth level is now", update_sneak(1))
+            player.stealth = saved_stealth
+            print("\nYour stealth level is now at", update_sneak(1))
             return
         elif stealth_prob <= random_stealth:
             print("\nYou weren't stealthy enough!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
     # If player stealth is lower than patron stealth, player now has only a 10% chance of winning the encounter this way
     elif player_stealth <= patron_stealth:
         stealth_prob = 1
@@ -323,22 +340,23 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth):
         elif stealth_prob <= patron_stealth:
             print("\nYou weren't stealthy enough!")
             print("Your stamina has decreased! It is now at", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
 
 
 # Just like the stealth encounter function above, but for using Magic
-def encounter_magic(rand_patron, player_magic, patron_magic):
+def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, saved_magic, saved_bravery):
     random_magic = random.randint(0, 10)
     if player_magic > patron_magic:
         magic_prob = player_magic - patron_magic
         if magic_prob > random_magic:
             print('\nYou successfully confused the patron!')
-            print("\nYour magic level is now", update_magic(1))
+            player.magic = saved_magic
+            print("\nYour magic level is now at", update_magic(1))
             return
         elif magic_prob <= random_magic:
             print("\nYour magic didn't work!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
     elif player_magic <= patron_magic:
         magic_prob = 1
         if magic_prob > random_magic:
@@ -348,22 +366,23 @@ def encounter_magic(rand_patron, player_magic, patron_magic):
         elif magic_prob <= patron_magic:
             print("\nYour magic didn't work!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
 
 
 # Just like the stealth and magic encounters above, but for using Bravery
-def encounter_bravery(rand_patron, player_bravery, patron_bravery):
+def encounter_bravery(rand_patron, player_bravery, patron_bravery, saved_stealth, saved_magic, saved_bravery):
     random_bravery = random.randint(0, 10)
     if player_bravery > patron_bravery:
         bravery_prob = player_bravery - patron_bravery
         if bravery_prob > random_bravery:
             print('\nYou successfully helped the patron!')
-            print("\nYour bravery level is now", update_bravery(1))
+            player.bravery = saved_bravery
+            print("\nYour bravery level is now at", update_bravery(1))
             return
         elif bravery_prob <= random_bravery:
             print("\nYou didn't help the patron!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
     elif player_bravery <= patron_bravery:
         bravery_prob = 1
         if bravery_prob > random_bravery:
@@ -373,13 +392,16 @@ def encounter_bravery(rand_patron, player_bravery, patron_bravery):
         elif bravery_prob <= patron_bravery:
             print("\nYou didn't help the patron!")
             print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
-            patronEncounterLoop(rand_patron)
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
 
 
 # This function creates instances of class Patron, with random stats based on the player's level
 def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStaminaLower, randPatronStaminaUpper):
     # This saves the player's stamina and remembers it for use after the patron encounter
     saved_stamina = player.getStamina()
+    saved_stealth = player.getStealth()
+    saved_magic = player.getMagic()
+    saved_bravery = player.getBravery()
     patron_infile = open('patron_lines.txt', 'r')
     patron_text = patron_infile.readlines()
     patron_infile.close()
@@ -387,30 +409,103 @@ def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStamin
     rand_patron = Patron([random.randint(randPatronStatsLower, randPatronStatsUpper), random.randint(randPatronStatsLower,
                                                                                                      randPatronStatsUpper),
                           random.randint(randPatronStatsLower, randPatronStatsUpper)], random.randint(randPatronStaminaLower,
-                                                                                                      randPatronStatsUpper))
+                                                                                                      randPatronStaminaUpper))
     print('\nA library patron appears!')
     print(patron_text[rand_patron_line_num - 1])
-    patronEncounterLoop(rand_patron)
+    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
     # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter
     player.stamina = saved_stamina
     print("Your stamina is now at", update_stamina(1))
 
 
 # This function sets up the encounter with patrons, getting input from the player
-def patronEncounterLoop(rand_patron):
-    encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron"> ')
+def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery):
+    encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron", "Use item"> ')
     if encounter_input[:5] == 'sneak':
-        encounter_sneak(rand_patron, player.stealth, rand_patron.stealth)
+        encounter_sneak(rand_patron, player.stealth, rand_patron.stealth, saved_stealth, saved_magic, saved_bravery)
         return
     elif encounter_input == 'use magic':
-        encounter_magic(rand_patron, player.magic, rand_patron.magic)
+        encounter_magic(rand_patron, player.magic, rand_patron.magic, saved_stealth, saved_magic, saved_bravery)
         return
     elif encounter_input == 'help patron':
-        encounter_bravery(rand_patron, player.bravery, rand_patron.bravery)
+        encounter_bravery(rand_patron, player.bravery, rand_patron.bravery, saved_stealth, saved_magic, saved_bravery)
+        return
+    elif encounter_input == 'use item':
+        encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery)
         return
     else:
         print("\nYou can't do that now. Try something else.\n")
-        patronEncounterLoop(rand_patron)
+        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# Describes what happens during a patron encounter when player uses an item
+def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery):
+    player.myItems()
+    itemQuery = input('What would you like to use? ')
+    if itemQuery == 'stamina potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Stamina Potion':
+                player.itemlist.remove(item)
+                print(f'Your stamina is now at {update_stamina(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'stealth potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Stealth Potion':
+                player.itemlist.remove(item)
+                print(f'Your stealth is now temporarily at {update_stealth(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+            else:
+                print('You don\'t have that.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'magic potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Magic Potion':
+                player.itemlist.remove(item)
+                print(f'Your magic is now temporarily at {update_magic(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'bravery potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Bravery Potion':
+                player.itemlist.remove(item)
+                print(f'Your bravery is now temporarily at {update_bravery(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'escape book':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Escape Book':
+                player.itemlist.remove(item)
+                print(f'You escaped the patron!')
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif 'magic book' in itemQuery:
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if 'Magic Book' in item_name:
+                print('You can\'t use that now!')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
 
 
 # Updates stamina, both for increasing it after winning a patron encounter, and decreasing it during the encounter
@@ -503,8 +598,6 @@ def game_loop():
                     print('Describe the settings of the room')
                 elif query == 'talk':
                     print('talk to someone in current location')
-                elif query == 'get some':
-                    print('got some')
                 elif query == 'get stamina potion':
                     if itemPickupPermission == 'Stamina Potion':
                         player.pickUpItem(loc)
@@ -538,6 +631,7 @@ def game_loop():
                 elif query == 'check items':
                     player.myItems()
                 elif query == 'use item':
+                    player.useItem()
                     print('use an item')
                 elif query == 'where am i':
                     getLocation(loc)
