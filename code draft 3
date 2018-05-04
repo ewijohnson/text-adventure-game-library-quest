@@ -1,0 +1,731 @@
+import sys
+import random
+
+
+class Room:
+
+    def __init__(self, name):
+        self.name = name
+        self.directions = []
+        self.items = []
+        self.room_description = []
+
+    def add_directions(self, direction):
+        self.directions.append(direction)
+
+    def add_items(self, item):
+        self.items.append(item)
+
+    def add_descriptions(self, description):
+        self.room_description.append(description)
+
+    def entering(self):
+        self.enter = True
+
+    def leaving(self):
+        self.enter = False
+
+    def inRoom(self):
+        return self.enter
+
+    def getName(self):
+        return self.name
+
+    def getItem(self):
+        for item in self.items:
+            item_name = item.getItemName()
+            return item_name
+
+    def getDescription(self):
+        print(self.room_description[0])
+
+    def move(self, loc_room):
+        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
+        move_list = ['north', 'east', 'south', 'west']
+        if direction_input in move_list:
+            direction_input_function(direction_input, loc_room)
+        else:
+            print("I didn't quite get that. Try again?")
+
+    def whereCanIMove(self):
+        print('\nYou can move the following directions:')
+        if self.directions[0] != 'None':
+            print('north')
+        if self.directions[1] != 'None':
+            print('east')
+        if self.directions[2] != 'None':
+            print('south')
+        if self.directions[3] != 'None':
+            print('west')
+        if self.directions[4] != 'None':
+            print('up')
+        if self.directions[5] != 'None':
+            print('down')
+
+
+#This is a subclass of class Room, and it adds two additional parameters for moving up or down
+class ElevatorRoom(Room):
+
+    def move_floors(self, loc_room):
+        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west', 'up', 'down'>: ")
+        move_floors_list = ['north', 'east', 'south', 'west', 'up', 'down']
+        if direction_input in move_floors_list:
+            direction_input_function(direction_input, loc_room)
+        else:
+            print("I didn't quite get that. Try again?")
+
+
+class Player:
+
+    def __init__(self, name, stats, stamina, items):
+        self.name = name
+        self.stats = stats
+        self.stealth = stats[0]
+        self.magic = stats[1]
+        self.bravery = stats[2]
+        self.stamina = stamina
+        self.itemlist = []
+
+    def getName(self):
+        return self.name
+
+    def getStealth(self):
+        return self.stealth
+
+    def getMagic(self):
+        return self.magic
+
+    def getBravery(self):
+        return self.bravery
+
+    def getStamina(self):
+        return self.stamina
+
+    def pickUpItem(self, location):
+        self.itemlist.append(location.items)
+        print(f'You picked up a {location.getItem()}.')
+
+    def myItems(self):
+        all_my_item_names = []
+        for item in self.itemlist:
+            item_name = item[0].getItemName()
+            all_my_item_names.append(item_name)
+        all_my_item_names = ", ".join(all_my_item_names)
+        print(f'You are currently holding:\n{all_my_item_names}')
+
+    def useItem(self):
+        self.myItems()
+        itemQuery = input('What would you like to use? ')
+        if itemQuery == 'stamina potion':
+            for item in self.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Stamina Potion':
+                    print('You can\'t use that now!')
+                    return
+            else:
+                print('You don\'t have that.')
+        elif itemQuery == 'stealth potion':
+            for item in self.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Stealth Potion':
+                    print('You can\'t use that now!')
+                    return
+            else:
+                print('You don\'t have that.')
+        elif itemQuery == 'magic potion':
+            for item in self.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Magic Potion':
+                    print('You can\'t use that now!')
+                    return
+            else:
+                print('You don\'t have that.')
+        elif itemQuery == 'bravery potion':
+            for item in self.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Bravery Potion':
+                    print('You can\'t use that now!')
+                    return
+            else:
+                print('You don\'t have that.')
+        elif itemQuery == 'escape book':
+            for item in self.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Escape Book':
+                    print('You can\'t use that now!')
+                    return
+            else:
+                print('You don\'t have that.')
+        elif 'magic book' in itemQuery:
+            pass
+
+
+class Patron:
+
+    def __init__(self, stats, stamina):
+        self.stats = stats
+        self.stealth = stats[0]
+        self.magic = stats[1]
+        self.bravery = stats[2]
+        self.stamina = stamina
+
+    def getStealth(self):
+        return self.stealth
+
+    def getMagic(self):
+        return self.magic
+
+    def getBravery(self):
+        return self.bravery
+
+    def getStamina(self):
+        return self.stamina
+
+
+class Item:
+
+    def __init__(self, name):
+        self.name = name
+
+    def getItemName(self):
+        return self.name
+
+
+class Potion(Item):
+
+    def potionFunction(self, potion):
+        self.potion = potion
+
+
+class KeyItem(Item):
+
+    def magicBooks(self, books):
+        self.books = books
+
+
+def createItemInstances(infile_items, all_locations, all_items):
+    text_itemCreations = infile_items.readlines()
+    for line in text_itemCreations:
+        line = line.split()
+        if line[2] == 'Potion':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instancePotion = Potion(item_name)
+            all_items.append(instancePotion)
+        elif line[2] == 'KeyItem':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instanceKeyItem = KeyItem(item_name)
+            all_items.append(instanceKeyItem)
+        elif line[2] == 'Item':
+            item_name = line[3:]
+            item_name = " ".join(item_name)
+            instanceItem = Item(item_name)
+            all_items.append(instanceItem)
+    appendItemstoLocations(all_items, all_locations)
+
+
+# This function appends the description string to each location
+def appendItemstoLocations(all_items, all_locations):
+    for item in all_items:
+        item_index_num = all_items.index(item)
+        location = all_locations[item_index_num]
+        location.add_items(item)
+
+
+# This function reads in a text file to create all instances of Room and ElevatorRoom
+def createRoomInstances(infile_locations, all_locations):
+    text_roomCreation = infile_locations.readlines()
+    for line in text_roomCreation:
+        line = line.split()
+        if line[2] == 'Room':
+            sliced_line = line[3:]
+            sliced_line = " ".join(sliced_line)
+            instanceRoom = Room(sliced_line)
+            all_locations.append(instanceRoom)
+        elif line[2] == 'ElevatorRoom':
+            sliced_line = line[3:]
+            sliced_line = " ".join(sliced_line)
+            instanceRoom = ElevatorRoom(sliced_line)
+            all_locations.append(instanceRoom)
+
+
+# This function takes the instances of Room and ElevatorRoom and appends adjacent Locations to it, allowing for
+#   moving between the locations
+def appendAdjacentRoomsToLocations(infile, all_locations):
+    for location in all_locations:
+        line = infile.readline()
+        line = clean_rooms_file(line)
+        loopFinalLocationAppend(line, location)
+
+
+def appendRoomDescriptions(infile_descriptions, all_locations):
+    text = infile_descriptions.read()
+    text = text.split('\n\n')
+    num = 0
+    for location in all_locations:
+        line = text[num]
+        location.add_descriptions(line)
+        num += 1
+
+
+# This function cleans the lines that are read in through appendAdjacentRoomsToLocation function
+def clean_rooms_file(line):
+    line = line.split()
+    line = line[2:]
+    line = ' '.join(line)
+    line = line.replace(',', '')
+    line = line.split()
+    return line
+
+
+# This function loops through the rooms in each cleaned line and adds the directions to each class instance
+def loopFinalLocationAppend(line, location):
+    for rooms in line:
+        if rooms != 'None':
+            rooms = eval(rooms)
+            location.add_directions(rooms)
+        else:
+            location.add_directions(rooms)
+
+
+# This function prints off the introduction and sets the stage for the plot
+def introduction():
+    print('This is the introduction!')
+
+
+# This function initializes the player's character at the beginning, granting a slight advantage in one of three categories
+def characterInitialization():
+    name_input = input('What is your name? ')
+    role_input = input('Would you like to start the game with more stealth, magic, or bravery? ')
+    if role_input == 'stealth':
+        player = Player(name_input, [8, 5, 5], 8, [])
+        return player
+    elif role_input == 'magic':
+        player = Player(name_input, [5, 8, 5], 8, [])
+        return player
+    elif role_input == 'bravery':
+        player = Player(name_input, [5, 5, 8], 8, [])
+        return player
+    else:
+        print('Excuse me? Please try that again.')
+        characterInitialization()
+
+
+# This function tells the player where they currently are
+def getLocation(place):
+    currentLocation = place.getName()
+    print(f'\nYou are currently in the {currentLocation}.')
+    place.getDescription()
+
+
+# This function provides the options that a player has
+def getLocationHelp():
+    print("\nYou have a few options for actions.")
+    print("Enter one of the following:")
+    print("""'move'\n'check items'\n'look around'\n'talk'\n'get [item name]'\n'use item'\n'Where am I?'\n\
+'Where can I move?'\n'quit'""")
+
+
+# This gets the index number of the list of directions, allowing the change location function to work for all six directions
+def direction_input_function(direction, loc_room_loc):
+    direction_list = ['north', 'east', 'south', 'west', 'up', 'down']
+    dir_num = direction_list.index(direction)
+    change_location(dir_num, loc_room_loc)
+
+
+# This function handles the actions when the player moves from location to location
+def change_location(dir_index, loc_self):
+    if loc_self.directions[dir_index] != 'None':
+        # This enters the new location, setting it to True
+        loc_self.directions[dir_index].entering()
+        # This prints off the location as the player enters it
+        getLocation(loc_self.directions[dir_index])
+        # This leaves the old location, setting it back to False
+        loc_self.leaving()
+        # This part of the function prepares the parameters for random patron stats, based on the player's level
+        patron_num = random.randint(1, 40)
+        if player.stamina <= 10:
+            if patron_num <= 20:
+                patronEncounter(1, 10, 10, 25)
+        elif 10 < player.stamina <= 20:
+            if patron_num <= 25:
+                patronEncounter(5, 20, 15, 30)
+        elif 20 < player.stamina <= 30:
+            if patron_num <= 30:
+                patronEncounter(10, 30, 25, 35)
+        elif 30 < player.stamina <= 40:
+            if patron_num <= 30:
+                patronEncounter(15, 40, 35, 45)
+        elif 40 < player.stamina <= 50:
+            if patron_num <= 35:
+                patronEncounter(25, 50, 45, 55)
+    elif loc_self.directions[dir_index] == 'None':
+        print("\nThat room doesn't exist. Try again.")
+
+
+# This function provides the mechanisms of action for when a player tries to use Stealth to handle a patron encounter
+def encounter_sneak(rand_patron, player_stealth, patron_stealth, saved_stealth, saved_magic, saved_bravery):
+    # Stealth probability is randomly selected, so different encounters are different difficulties
+    random_stealth = random.randint(0, 10)
+    if player_stealth > patron_stealth:
+        # Player stealth is compared to patron stealth to get the difference
+        stealth_prob = player_stealth - patron_stealth
+        if stealth_prob > random_stealth:
+            print('\nYou successfully snuck away!')
+            player.stealth = saved_stealth
+            print("\nYour stealth level is now at", update_sneak(1))
+            return
+        elif stealth_prob <= random_stealth:
+            print("\nYou weren't stealthy enough!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    # If player stealth is lower than patron stealth, player now has only a 10% chance of winning the encounter this way
+    elif player_stealth <= patron_stealth:
+        stealth_prob = 1
+        if stealth_prob > random_stealth:
+            print('\nYou successfully snuck away!')
+            print("\nYour stealth level is now", update_sneak(1))
+            return
+        elif stealth_prob <= patron_stealth:
+            print("\nYou weren't stealthy enough!")
+            print("Your stamina has decreased! It is now at", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# Just like the stealth encounter function above, but for using Magic
+def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, saved_magic, saved_bravery):
+    random_magic = random.randint(0, 10)
+    if player_magic > patron_magic:
+        magic_prob = player_magic - patron_magic
+        if magic_prob > random_magic:
+            print('\nYou successfully confused the patron!')
+            player.magic = saved_magic
+            print("\nYour magic level is now at", update_magic(1))
+            return
+        elif magic_prob <= random_magic:
+            print("\nYour magic didn't work!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif player_magic <= patron_magic:
+        magic_prob = 1
+        if magic_prob > random_magic:
+            print('\nYou successfully confused the patron!')
+            print("\nYour magic level is now", update_magic(1))
+            return
+        elif magic_prob <= patron_magic:
+            print("\nYour magic didn't work!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# Just like the stealth and magic encounters above, but for using Bravery
+def encounter_bravery(rand_patron, player_bravery, patron_bravery, saved_stealth, saved_magic, saved_bravery):
+    random_bravery = random.randint(0, 10)
+    if player_bravery > patron_bravery:
+        bravery_prob = player_bravery - patron_bravery
+        if bravery_prob > random_bravery:
+            print('\nYou successfully helped the patron!')
+            player.bravery = saved_bravery
+            print("\nYour bravery level is now at", update_bravery(1))
+            return
+        elif bravery_prob <= random_bravery:
+            print("\nYou didn't help the patron!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif player_bravery <= patron_bravery:
+        bravery_prob = 1
+        if bravery_prob > random_bravery:
+            print('\nYou successfully helped the patron!')
+            print("\nYour bravery level is now", update_bravery(1))
+            return
+        elif bravery_prob <= patron_bravery:
+            print("\nYou didn't help the patron!")
+            print("Your stamina has decreased! It is now at ", update_stamina(-1), '\n')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# This function creates instances of class Patron, with random stats based on the player's level
+def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStaminaLower, randPatronStaminaUpper):
+    # This saves the player's stamina and remembers it for use after the patron encounter
+    saved_stamina = player.getStamina()
+    saved_stealth = player.getStealth()
+    saved_magic = player.getMagic()
+    saved_bravery = player.getBravery()
+    patron_infile = open('patron_lines.txt', 'r')
+    patron_text = patron_infile.readlines()
+    patron_infile.close()
+    rand_patron_line_num = random.randint(1, 40)
+    rand_patron = Patron([random.randint(randPatronStatsLower, randPatronStatsUpper), random.randint(randPatronStatsLower,
+                                                                                                     randPatronStatsUpper),
+                          random.randint(randPatronStatsLower, randPatronStatsUpper)], random.randint(randPatronStaminaLower,
+                                                                                                      randPatronStaminaUpper))
+    print('\nA library patron appears!')
+    print(patron_text[rand_patron_line_num - 1])
+    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter
+    player.stamina = saved_stamina
+    print("Your stamina is now at", update_stamina(1))
+
+
+# This function sets up the encounter with patrons, getting input from the player
+def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery):
+    encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron", "Use item"> ')
+    if encounter_input[:5] == 'sneak':
+        encounter_sneak(rand_patron, player.stealth, rand_patron.stealth, saved_stealth, saved_magic, saved_bravery)
+        return
+    elif encounter_input == 'use magic':
+        encounter_magic(rand_patron, player.magic, rand_patron.magic, saved_stealth, saved_magic, saved_bravery)
+        return
+    elif encounter_input == 'help patron':
+        encounter_bravery(rand_patron, player.bravery, rand_patron.bravery, saved_stealth, saved_magic, saved_bravery)
+        return
+    elif encounter_input == 'use item':
+        encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery)
+        return
+    else:
+        print("\nYou can't do that now. Try something else.\n")
+        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# Describes what happens during a patron encounter when player uses an item
+def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery):
+    player.myItems()
+    itemQuery = input('What would you like to use? ')
+    if itemQuery == 'stamina potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Stamina Potion':
+                player.itemlist.remove(item)
+                print(f'Your stamina is now at {update_stamina(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'stealth potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Stealth Potion':
+                player.itemlist.remove(item)
+                print(f'Your stealth is now temporarily at {update_stealth(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+            else:
+                print('You don\'t have that.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'magic potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Magic Potion':
+                player.itemlist.remove(item)
+                print(f'Your magic is now temporarily at {update_magic(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'bravery potion':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Bravery Potion':
+                player.itemlist.remove(item)
+                print(f'Your bravery is now temporarily at {update_bravery(5)}.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif itemQuery == 'escape book':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Escape Book':
+                player.itemlist.remove(item)
+                print(f'You escaped the patron!')
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    elif 'magic book' in itemQuery:
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if 'Magic Book' in item_name:
+                print('You can\'t use that now!')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+                return
+        else:
+            print('You don\'t have that.')
+            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+
+
+# Updates stamina, both for increasing it after winning a patron encounter, and decreasing it during the encounter
+def update_stamina(num):
+    player.stamina += num
+    if player.stamina == 0:
+        print("You passed out from exhaustion! Better luck next time.")
+        raise RuntimeError
+    else:
+        return player.getStamina()
+
+
+# Updates player's Stealth stat after winning an encounter
+def update_sneak(num):
+    player.stealth += num
+    return player.getStealth()
+
+
+# Updates player's Magic stat after winning an encounter
+def update_magic(num):
+    player.magic += num
+    return player.getMagic()
+
+
+# Updates player's Bravery stat after winning an encounter
+def update_bravery(num):
+    player.bravery += num
+    return player.getBravery()
+
+
+# Analyzes player input from initialization, thereby beginning the game or exiting
+def initialization_answer(choice):
+    if choice == 'y':
+        main()
+    elif choice == 'n':
+        print('Try again next time!')
+        sys.exit()
+    else:
+        opening_choice = input("I don't know what you want. Try again? Type 'yes' or 'no'. ")
+        opening_choice = opening_choice[0].lower()
+        initialization_answer(opening_choice)
+
+
+# Asks the player if they would like to enter the library and begin the game
+def initialization():
+    opening_choice = input("Would you like to enter the library? ")
+    opening_choice = opening_choice[0].lower()
+    initialization_answer(opening_choice)
+
+
+# Sets up the first location and primes the beginning of the game_loop
+def main():
+    game = True
+    loc = all_locations[0]
+    loc.entering()
+    getLocation(loc)
+    while game is True:
+        game_loop()
+
+
+# The heart of the game, where all other functions come from, lead to, or return to
+def game_loop():
+    # Loops through each location one by one. This allows for distinct actions to be done in each of the 52 locations
+    for loc in all_locations:
+        try:
+            # This is changed for each location through the move() and move_floors() functions, with the self.entering()
+            #     and self.leaving() methods
+            while loc.inRoom() is True:
+                itemPickupPermission = loc.getItem()
+                query = input('\nWhat would you like to do? ')
+                query = query.lower()
+                query = query.strip('?')
+                # the 'help' query will allow the player to see all possible actions
+                if query == 'help':
+                    getLocationHelp()
+                elif query[:4] == 'move':
+                    # This checks to see if the current room is subclass ElevatorRoom or class Room
+                    if isinstance(loc, ElevatorRoom):
+                        # if class ElevatorRoom, there are more movement options (up or down, additionally)
+                        loc.move_floors(loc)
+                        break
+                    elif isinstance(loc, Room):
+                        # if class is just Room, there are just the basic four movement options
+                        loc.move(loc)
+                        break
+                # Where can I move?
+                elif query[:13] == 'where can i m':
+                    loc.whereCanIMove()
+                elif query == 'look around':
+                    print('Describe the settings of the room')
+                elif query == 'talk':
+                    print('talk to someone in current location')
+                elif query == 'get stamina potion':
+                    if itemPickupPermission == 'Stamina Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get stealth potion':
+                    if itemPickupPermission == 'Stealth Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get magic potion':
+                    if itemPickupPermission == 'Magic Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get bravery potion':
+                    if itemPickupPermission == 'Bravery Potion':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get escape book':
+                    if itemPickupPermission == 'Escape Book':
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'get magic book':
+                    if 'Magic Book' in itemPickupPermission:
+                        player.pickUpItem(loc)
+                    else:
+                        print('Sorry, that item can\'t be found here.')
+                elif query == 'check items':
+                    player.myItems()
+                elif query == 'use item':
+                    player.useItem()
+                elif query == 'where am i':
+                    getLocation(loc)
+                elif query == 'quit':
+                    quitting_input = input("Are you sure? ")
+                    if quitting_input[0].lower() == 'y':
+                        # raises RuntimeError and jumps to the except loop, which then uses sys.exit() to leave the game
+                        print("\nThanks for playing!")
+                        raise RuntimeError
+                    elif quitting_input[0].lower() == 'n':
+                        break
+                    else:
+                        print("I didn't understand you.")
+                else:
+                    print('Didn\'t think of that option yet. Nice.')
+        except RuntimeError:
+            sys.exit()
+        except:
+            pass
+
+
+# This creates all instances of Room and ElevatorRoom
+all_locations = []
+infile_locations = open('create_all_rooms.txt', 'r')
+createRoomInstances(infile_locations, all_locations)
+infile_locations.close()
+
+# This links adjacent Locations to each Location, allowing for movement
+infile = open('adjacent_rooms_file.txt', 'r')
+appendAdjacentRoomsToLocations(infile, all_locations)
+infile.close()
+
+infile_descriptions = open('room_descriptions.txt', 'r')
+appendRoomDescriptions(infile_descriptions, all_locations)
+infile_descriptions.close()
+
+
+all_items = []
+infile_items = open('items_in_rooms_file.txt', 'r')
+createItemInstances(infile_items, all_locations, all_items)
+infile_items.close()
+
+# The game is called and run from here
+introduction()
+player = characterInitialization()
+print("Welcome, " + player.getName() + ". " + "Your starting stats are: ")
+print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
+initialization()
