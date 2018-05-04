@@ -203,6 +203,7 @@ class KeyItem(Item):
         self.books = books
 
 
+# This creates the instances of each item
 def createItemInstances(infile_items, all_locations, all_items):
     text_itemCreations = infile_items.readlines()
     for line in text_itemCreations:
@@ -259,6 +260,7 @@ def appendAdjacentRoomsToLocations(infile, all_locations):
         loopFinalLocationAppend(line, location)
 
 
+# This appends the room descriptions to each location
 def appendRoomDescriptions(infile_descriptions, all_locations):
     text = infile_descriptions.read()
     text = text.split('\n\n')
@@ -713,11 +715,12 @@ infile = open('adjacent_rooms_file.txt', 'r')
 appendAdjacentRoomsToLocations(infile, all_locations)
 infile.close()
 
+# This appends the room descriptions to each location
 infile_descriptions = open('room_descriptions.txt', 'r')
 appendRoomDescriptions(infile_descriptions, all_locations)
 infile_descriptions.close()
 
-
+# This creates instances of each item
 all_items = []
 infile_items = open('items_in_rooms_file.txt', 'r')
 createItemInstances(infile_items, all_locations, all_items)
