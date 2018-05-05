@@ -9,6 +9,7 @@ class Room:
         self.directions = []
         self.items = []
         self.room_description = []
+        self.npc = []
 
     def add_directions(self, direction):
         self.directions.append(direction)
@@ -18,6 +19,12 @@ class Room:
 
     def add_descriptions(self, description):
         self.room_description.append(description)
+
+    def getNPC(self):
+        return self.npc[0]
+
+    def getNPCTalk(self):
+        return self.npc[1]
 
     def entering(self):
         self.enter = True
@@ -203,6 +210,33 @@ class KeyItem(Item):
         self.books = books
 
 
+class NPC:
+
+    def __init__(self, name):
+        self.name = name
+        self.speech = []
+
+    def getNPCName(self):
+        return self.name
+
+    def getNPCSpeech(self):
+        print(self.speech[0].strip())
+
+
+def createNPCInstances(infile_npcs, all_locations):
+    text_npc_file = infile_npcs.readlines()
+    num = 0
+    for line in text_npc_file:
+        line = line.split('$')
+        if 'None\n' not in line:
+            instanceNPC = NPC(line[0])
+            instanceNPC.speech.append(line[1])
+            all_locations[num].npc.append(instanceNPC)
+            num += 1
+        else:
+            num += 1
+
+
 # This creates the instances of each item
 def createItemInstances(infile_items, all_locations, all_items):
     text_itemCreations = infile_items.readlines()
@@ -317,8 +351,13 @@ def characterInitialization():
 # This function tells the player where they currently are
 def getLocation(place):
     currentLocation = place.getName()
-    print(f'\nYou are currently in the {currentLocation}.')
+    print(f'\nYou are now in the {currentLocation}.')
     place.getDescription()
+
+
+def checkLocation(place):
+    currentLocation = place.getName()
+    print(f'\nYou are currently in the {currentLocation}.')
 
 
 # This function provides the options that a player has
@@ -647,9 +686,13 @@ def game_loop():
                 elif query[:13] == 'where can i m':
                     loc.whereCanIMove()
                 elif query == 'look around':
-                    print('Describe the settings of the room')
+                    loc.getDescription()
                 elif query == 'talk':
-                    print('talk to someone in current location')
+                    try:
+                        print(f'The {loc.getNPC().getNPCName()}approaches you and says:')
+                        loc.getNPC().getNPCSpeech()
+                    except:
+                        print('There is no one here to talk to.')
                 elif query == 'get stamina potion':
                     if itemPickupPermission == 'Stamina Potion':
                         player.pickUpItem(loc)
@@ -685,7 +728,7 @@ def game_loop():
                 elif query == 'use item':
                     player.useItem()
                 elif query == 'where am i':
-                    getLocation(loc)
+                    checkLocation(loc)
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
@@ -725,6 +768,11 @@ all_items = []
 infile_items = open('items_in_rooms_file.txt', 'r')
 createItemInstances(infile_items, all_locations, all_items)
 infile_items.close()
+
+# This creates instances of all the NPCs that the player can talk to
+infile_npcs = open('list_of_npcs.txt', 'r')
+createNPCInstances(infile_npcs, all_locations)
+infile_npcs.close()
 
 # The game is called and run from here
 introduction()
