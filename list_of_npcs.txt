@@ -1,0 +1,52 @@
+Entrance Desk Staff $ Hello there!
+User Experience Librarian $ What is up?
+Head of Circulation $ Can I help you?
+Reference Librarian 1 $ Read a book.
+Technology Librarian $ Use a computer.
+None
+None
+None
+Student Worker $ Whassup.
+Student Worker $ Zzzzzz.
+Student Worker $ Are you looking for something?
+None
+Electrician $ Bzzzt.
+None
+Reference Librarian 2 $ Read another book.
+None
+None
+Digital Curation Librarian $ Look at my repository!
+Media Specialist $ Want a movie, or perhaps a video game?
+Cafe Worker $ Medium coffee?
+None
+None
+None
+Student Worker $ Look here!
+Area Studies Librarian $ What's your favorite country?
+None
+Writing Tutor $ Get rid of those commas.
+None
+Mathematics Librarian $ So tell me about the quadratic equation.
+Custodian $ How's your day going?
+None
+Science Librarian $ PHOTOSYNTHESIS
+None
+None
+None
+None
+None
+Shelving Supervisor $ Do you need any books?
+Music Librarian $ la la hum di ho
+Art Librarian $ VanGogh is too mainstream for me.
+Data Librarian $ Let's crunch some numbers!
+None
+None
+None
+None
+None
+Language Studies Librarian $ Como estas?
+Student Worker $ Nice view.
+Student Worker $ I'm bored.
+Student Worker $ How many books do we have?
+Student Worker $ Do all of these have to be shelved?
+None
