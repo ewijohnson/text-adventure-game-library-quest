@@ -2,7 +2,7 @@
 2 = Potion Stamina Potion
 3 = Item Escape Book
 4 = Potion Stamina Potion
-5 = KeyItem Magic Book 2
+5 = KeyItem Magic Book of Fire
 6 = Potion Stealth Potion
 7 = Potion Stamina Potion
 8 = Potion Bravery Potion
@@ -10,10 +10,10 @@
 10 = Potion Stamina Potion
 11 = Potion Magic Potion
 12 = Potion Stamina Potion
-13 = KeyItem Magic Book 6
+13 = KeyItem Magic Book of Lightning
 14 = Potion Bravery Potion
 15 = Item Escape Book
-16 = KeyItem Magic Book 4
+16 = KeyItem Magic Book of Water
 17 = Potion Stamina Potion
 18 = Potion Stamina Potion
 19 = Potion Magic Potion
@@ -24,11 +24,11 @@
 24 = Potion Bravery Potion
 25 = Potion Stealth Potion
 26 = Potion Stamina Potion
-27 = KeyItem Magic Book 3
+27 = KeyItem Magic Book of Air
 28 = Potion Magic Potion
 29 = Potion Stealth Potion
 30 = Potion Stamina Potion
-31 = KeyItem Magic Book 1
+31 = KeyItem Magic Book of Earth
 32 = Potion Bravery Potion
 33 = Potion Stealth Potion
 34 = Item Escape Book
@@ -36,7 +36,7 @@
 36 = Potion Stamina Potion
 37 = Potion Magic Potion
 38 = Item Escape Book
-39 = KeyItem Magic Book 5
+39 = KeyItem Magic Book of Ice
 40 = Potion Bravery Potion
 41 = Potion Stealth Potion
 42 = Potion Bravery Potion
@@ -49,4 +49,4 @@
 49 = Potion Stealth Potion
 50 = Potion Stamina Potion
 51 = Item Escape Book
-52 = KeyItem Magic Book 7
+52 = KeyItem Magic Book of Spirit

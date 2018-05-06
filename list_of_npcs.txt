@@ -1,52 +1,225 @@
-Entrance Desk Staff $ Hello there!
-User Experience Librarian $ What is up?
-Head of Circulation $ Can I help you?
-Reference Librarian 1 $ Read a book.
-Technology Librarian $ Use a computer.
+Entrance Desk Staff $ "How're you today? Pretty blustery day outside, isn't it?
+If you need anything, just ask anyone you see around the library. Or type 'help'
+for more basic assistance."
+
+
+User Experience Librarian $ "Ah, do you have a moment to help me? I can't seem
+to find this book that the patron over there wants. Ah nevermind, I found it!
+I wish I had more Escape Books that I could use to get out of these patron
+encounters, but I used all of mine yesterday and haven't had a chance to look
+around for more."
+
+
+Head of Circulation $ "Can I help you?"
+
+
+Reference Librarian $ "If you look around, you can find all kinds of items that
+patrons have left. I always like trying to collect as many Stamina Potions as I
+can, but that's just because I get exhausted easily helping all these patrons!"
+
+
+Technology Librarian $ "No, no, you're not bothering me. I'm just defragging this
+computer. You know, if you're looking for something, I think I saw a book over
+there that looked to be out of place. I haven't had a chance to check it out
+yet though."
+
+
 None
+
+
 None
+
+
 None
-Student Worker $ Whassup.
-Student Worker $ Zzzzzz.
-Student Worker $ Are you looking for something?
+
+
+Student Worker $ "Zzzzzzzzz." Try as you might, you
+can't wake him from his slumber.
+
+
+Student Worker $ "Hi, can I help you find anything down here? I'm just fixing
+the books on these shelves, but feel free to browse if you're looking for something.
+I wish I were working in the West Basement today, those materials are always far
+more interesting to work with than these. But don't tell my supervisor that! I
+don't want to come off as dissatisfied."
+
+
+Student Worker $ "These materials are part of the backlog that we need to finish
+cataloging. I've been looking for one particular book, but I can't seem to find
+it. I think it was misplaced years ago, but if I could only find it, it would
+go to great use. I heard someone important was looking for it." $ 
+"That's the book! The Magic Book of Earth! Thank you so much!"
+
+
 None
-Electrician $ Bzzzt.
+
+
+Electrician $ "Huh? Sorry, I couldn't hear you over all this buzzing. You can
+look around if you want, honestly who knows what you might find in here!"
+
+
 None
-Reference Librarian 2 $ Read another book.
+
+
+Reference Librarian $ "Nice day out, isn't it? Well it would be even better if
+I could find that book I've been looking for! It's for a very important patron,
+the Board Director, actually, and he's going to be quite angry if I can't find
+it." $ 
+"Oh! That's it! The Magic Book of Spirit. Thank you! I'll bring it right to the 
+Board Director. You've been a huge help."
+
+
 None
+
+
 None
-Digital Curation Librarian $ Look at my repository!
-Media Specialist $ Want a movie, or perhaps a video game?
-Cafe Worker $ Medium coffee?
+
+
+Digital Curation Librarian $ "Hey, come here and look at this project I've been
+working on. Pretty cool, right? All that it needs is a few more tweaks and
+features. Anyway, have you found any Magic Potions lying around? They're some
+of my favorite to collect."
+
+
+Media Specialist $ "If you're looking to get a movie or a video game, the shelves
+are to your right. I'm rather busy at the moment, I've been looking for this book
+that someone requested. But it's not where it should be, and I'm getting quite
+frustrated." $ 
+"Well, aren't you the helpful one? That's just the book I've been looking for, the
+Magic Book of Lightning. I can just take that off your hands for you."
+
+
+Cafe Worker $ "Medium coffee? And one of the donuts? I'll tell you what, if you
+can bring me this book I've been searching for, I'll give you a free coffee AND
+donut tomorrow." $ 
+"That's the book! The Magic Book of Fire. Where did you find it? Well just remind 
+me tomorrow about your free food."
+
+
 None
+
+
 None
+
+
 None
-Student Worker $ Look here!
-Area Studies Librarian $ What's your favorite country?
+
+
+Student Worker $ "Aren't all these books fantastic? I love shelving! This is great.
+Hey, let me know if you come across a few dozen Bravery Potions, will you? I seem 
+to be running out." 
+
+
+Area Studies Librarian $ "The world is really becoming a smaller place these days,
+isn't it? If only it were small enough for me to find this book that I've
+searching for. I can't find it anywhere!" $ 
+"Yes that's the book! That's the one I've been looking for! The Magic Book of Ice.
+Thank you so much."
+
+
 None
-Writing Tutor $ Get rid of those commas.
+
+
+Writing Tutor $ "You have too many commas! Oh, sorry, I thought you were one of
+my students again. No, I'm just waiting around here, helping people. There might
+be some interesting things around if you take the time to search."
+
+
 None
-Mathematics Librarian $ So tell me about the quadratic equation.
-Custodian $ How's your day going?
+
+
+Mathematics Librarian $ "Yes, I am a fan of the quadratic equation. How did you
+know? Well, if you're looking for Stealth Potions, there should be some scattered
+around. I know I've seen a few today."
+
+
+Custodian $ "So, have you found the four different types of potions and the two
+different types of books yet? If you haven't, just talk to more people, and search
+around some more."
+
+
 None
-Science Librarian $ PHOTOSYNTHESIS
+
+
+Science Librarian $ "PHOTOSYNTHESIS IS THE TOPIC OF THE DAY. Oh, sorry. I didn't
+mean to shout. I've just had a lot of coffee today. CHLOROPHYLL!"
+
+
 None
+
+
 None
+
+
 None
+
+
 None
+
+
 None
-Shelving Supervisor $ Do you need any books?
-Music Librarian $ la la hum di ho
-Art Librarian $ VanGogh is too mainstream for me.
-Data Librarian $ Let's crunch some numbers!
+
+
+Shelving Supervisor $ "Have you seen all eight of my student workers? I can't seem
+to find them all..."
+
+
+Music Librarian $ "La la di do dah. Oh! I didn't hear you. Yes, feel free to look
+around my office, I have all sorts of stuff stashed around here that I'm sure I've
+forgotten about!"
+
+
+Art Librarian $ "Yes, yes, I can help you as soon as I finish with these students.
+It might be a few minutes though."
+
+
+Data Librarian $ "I love watching the storms roll in from up here. It's especially
+pleasant when I have my special dark roast, freshly made. Actually, the only thing
+that could make this better is if I had that book that I've been missing..." $
+"Oh you found it! Thank you so much. This is now the perfect moment! The Magic Book
+of Water!"
+
+
 None
+
+
 None
+
+
 None
+
+
 None
+
+
 None
-Language Studies Librarian $ Como estas?
-Student Worker $ Nice view.
-Student Worker $ I'm bored.
-Student Worker $ How many books do we have?
-Student Worker $ Do all of these have to be shelved?
+
+
+Literature Librarian $ "Have you seen the wide selection of foreign language
+books we've been getting in lately? It's fantastic. We now offer books in hundreds
+of languages, many which other libraries don't have! You should check them out, and
+if you need help reading any of them, just let me know."
+
+
+Student Worker $ "Can you come back later? I'm busy."
+
+
+Student Worker $ "I'm just finishing rearranging these books. They were all out of
+order. We had a patron come in last week who pulled over one hundred of these books
+for research and then left after two hours. I'm not sure how he was able to go
+through all those books that fast."
+
+
+Student Worker $ "Do you see all of these books that I have to shift? Yeah, that's
+because we got so many new ones that all go into one section. We could just
+mysteriously 'lose' some of them, but no, they all have to be shifted."
+
+
+Student Worker $ "Woah, I didn't see you there! No, I'm just taking a short break,
+that's all, taking care of all these books really wears you out! Yeah! Hey, have
+you seen this one book? If I found it, I could go home early, but it's nowhere!"
+$ "That's the book! That's the one! That's it! That's the Magic Book of Air! Thank 
+you so much! Now I can leave." 
+
+
 None
