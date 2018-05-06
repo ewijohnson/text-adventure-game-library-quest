@@ -217,20 +217,26 @@ class NPC:
         self.speech = []
 
     def getNPCName(self):
-        return self.name
+        return self.name.strip()
 
     def getNPCSpeech(self):
         print(self.speech[0].strip())
 
 
+
 def createNPCInstances(infile_npcs, all_locations):
-    text_npc_file = infile_npcs.readlines()
+    text_npc_file = infile_npcs.read()
+    text_npc_file = text_npc_file.split('\n\n')
     num = 0
     for line in text_npc_file:
         line = line.split('$')
-        if 'None\n' not in line:
+        if '\nNone' not in line:
             instanceNPC = NPC(line[0])
             instanceNPC.speech.append(line[1])
+            try:
+                instanceNPC.speech.append(line[2])
+            except:
+                pass
             all_locations[num].npc.append(instanceNPC)
             num += 1
         else:
@@ -689,7 +695,7 @@ def game_loop():
                     loc.getDescription()
                 elif query == 'talk':
                     try:
-                        print(f'The {loc.getNPC().getNPCName()}approaches you and says:')
+                        print(f'The {loc.getNPC().getNPCName()} replies:')
                         loc.getNPC().getNPCSpeech()
                     except:
                         print('There is no one here to talk to.')
