@@ -650,6 +650,23 @@ def update_bravery(num):
     return player.getBravery()
 
 
+# Chooses the appropriate NPC response if they have two choices (if they receive a Magic Book at some point)
+def speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list):
+    Y_or_N = player.lookupItems(item_check)
+    if Y_or_N == 'y':
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == item_check:
+                player.itemlist.remove(item)
+                master_magic_book_list.append(item[0])
+        print(f'The {loc.getNPC().getNPCName()} replies:')
+        loc.getNPC().getNPCSpeechMagicBook()
+        return master_magic_book_list
+    elif Y_or_N == 'n':
+        print(f'The {loc.getNPC().getNPCName()} replies:')
+        loc.getNPC().getNPCSpeech()
+
+
 # Analyzes player input from initialization, thereby beginning the game or exiting
 def initialization_answer(choice):
     if choice == 'y':
@@ -718,20 +735,25 @@ def game_loop():
                         if len(loc.getNPC().speech) == 2:
                             if loc == all_locations[10]:
                                 item_check = 'Magic Book of Earth'
-                                Y_or_N = player.lookupItems(item_check)
-                                if Y_or_N == 'y':
-                                    for item in player.itemlist:
-                                        item_name = item[0].getItemName()
-                                        if item_name == item_check:
-                                            player.itemlist.remove(item)
-                                            master_magic_book_list.append(item[0])
-                                    print(f'The {loc.getNPC().getNPCName()} replies:')
-                                    loc.getNPC().getNPCSpeechMagicBook()
-                                elif Y_or_N == 'n':
-                                    print(f'The {loc.getNPC().getNPCName()} replies:')
-                                    loc.getNPC().getNPCSpeech()
-                            else:
-                                print("This is not the correct location thingy.")
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[14]:
+                                item_check = 'Magic Book of Spirit'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[18]:
+                                item_check = 'Magic Book of Lightning'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[19]:
+                                item_check = 'Magic Book of Fire'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[24]:
+                                item_check = 'Magic Book of Ice'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[40]:
+                                item_check = 'Magic Book of Water'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
+                            if loc == all_locations[50]:
+                                item_check = 'Magic Book of Air'
+                                master_magic_book_list = speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
                         elif len(loc.getNPC().speech) == 1:
                             print(f'The {loc.getNPC().getNPCName()} replies:')
                             loc.getNPC().getNPCSpeech()
