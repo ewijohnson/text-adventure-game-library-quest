@@ -4,10 +4,10 @@ for more basic assistance."
 
 
 User Experience Librarian $ "Ah, do you have a moment to help me? I can't seem
-to find this book that the patron over there wants. Ah nevermind, I found it!
+to find this book that that patron at the table wants. Ah nevermind, I found it!
 I wish I had more Escape Books that I could use to get out of these patron
 encounters, but I used all of mine yesterday and haven't had a chance to look
-around for more."
+around for more. If you see any hidden yellow books, they're probably Escape Books."
 
 
 Head of Circulation $ "Can I help you?"
@@ -15,13 +15,14 @@ Head of Circulation $ "Can I help you?"
 
 Reference Librarian $ "If you look around, you can find all kinds of items that
 patrons have left. I always like trying to collect as many Stamina Potions as I
-can, but that's just because I get exhausted easily helping all these patrons!"
+can, but that's just because I get exhausted easily helping all these patrons!
+If you see any green potions hiding around, they're Stamina Potions."
 
 
 Technology Librarian $ "No, no, you're not bothering me. I'm just defragging this
-computer. You know, if you're looking for something, I think I saw a book over
-there that looked to be out of place. I haven't had a chance to check it out
-yet though."
+computer. You know, if you're looking for something, I think I saw a strange book 
+over there that looked out of place. I haven't had a chance to check it out yet
+though."
 
 
 None
@@ -55,7 +56,8 @@ None
 
 
 Electrician $ "Huh? Sorry, I couldn't hear you over all this buzzing. You can
-look around if you want, honestly who knows what you might find in here!"
+look around if you want, honestly who knows what you might find in here! I thought
+I saw a rather strange looking book in one of these boxes."
 
 
 None
@@ -78,7 +80,7 @@ None
 Digital Curation Librarian $ "Hey, come here and look at this project I've been
 working on. Pretty cool, right? All that it needs is a few more tweaks and
 features. Anyway, have you found any Magic Potions lying around? They're some
-of my favorite to collect."
+of my favorite to collect. I love the bright blue color that they are."
 
 
 Media Specialist $ "If you're looking to get a movie or a video game, the shelves
@@ -107,7 +109,7 @@ None
 
 Student Worker $ "Aren't all these books fantastic? I love shelving! This is great.
 Hey, let me know if you come across a few dozen Bravery Potions, will you? I seem 
-to be running out." 
+to be running out. You can tell they're Bravery Potions because they're red." 
 
 
 Area Studies Librarian $ "The world is really becoming a smaller place these days,
@@ -130,7 +132,7 @@ None
 
 Mathematics Librarian $ "Yes, I am a fan of the quadratic equation. How did you
 know? Well, if you're looking for Stealth Potions, there should be some scattered
-around. I know I've seen a few today."
+around. I know I've seen a few today. You can't miss that purple sheen."
 
 
 Custodian $ "So, have you found the four different types of potions and the two
@@ -161,12 +163,12 @@ None
 
 
 Shelving Supervisor $ "Have you seen all eight of my student workers? I can't seem
-to find them all..."
+to find them..."
 
 
 Music Librarian $ "La la di do dah. Oh! I didn't hear you. Yes, feel free to look
-around my office, I have all sorts of stuff stashed around here that I'm sure I've
-forgotten about!"
+around my office, I have all sorts of mystical stuff stashed around here that I'm sure 
+I've forgotten about!"
 
 
 Art Librarian $ "Yes, yes, I can help you as soon as I finish with these students.
