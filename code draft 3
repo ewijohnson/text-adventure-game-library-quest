@@ -20,6 +20,9 @@ class Room:
     def add_descriptions(self, description):
         self.room_description.append(description)
 
+    def checkNPC(self):
+        return self.npc
+
     def getNPC(self):
         return self.npc[0]
 
@@ -111,6 +114,18 @@ class Player:
     def pickUpItem(self, location):
         self.itemlist.append(location.items)
         print(f'You picked up a {location.getItem()}.')
+
+    def lookupItems(self, item_check):
+        all_my_item_names = []
+        for item in self.itemlist:
+            item_name = item[0].getItemName()
+            all_my_item_names.append(item_name)
+        if item_check in all_my_item_names:
+            return 'y'
+        elif item_check not in all_my_item_names:
+            return 'n'
+        else:
+            print('oops')
 
     def myItems(self):
         all_my_item_names = []
@@ -222,6 +237,8 @@ class NPC:
     def getNPCSpeech(self):
         print(self.speech[0].strip())
 
+    def getNPCSpeechMagicBook(self):
+        print(self.speech[1].strip())
 
 
 def createNPCInstances(infile_npcs, all_locations):
@@ -665,6 +682,7 @@ def main():
 
 # The heart of the game, where all other functions come from, lead to, or return to
 def game_loop():
+    master_magic_book_list = []
     # Loops through each location one by one. This allows for distinct actions to be done in each of the 52 locations
     for loc in all_locations:
         try:
@@ -694,11 +712,29 @@ def game_loop():
                 elif query == 'look around':
                     loc.getDescription()
                 elif query == 'talk':
-                    try:
-                        print(f'The {loc.getNPC().getNPCName()} replies:')
-                        loc.getNPC().getNPCSpeech()
-                    except:
+                    if len(loc.checkNPC()) == 0:
                         print('There is no one here to talk to.')
+                    else:
+                        if len(loc.getNPC().speech) == 2:
+                            if loc == all_locations[10]:
+                                item_check = 'Magic Book of Earth'
+                                Y_or_N = player.lookupItems(item_check)
+                                if Y_or_N == 'y':
+                                    for item in player.itemlist:
+                                        item_name = item[0].getItemName()
+                                        if item_name == item_check:
+                                            player.itemlist.remove(item)
+                                            master_magic_book_list.append(item[0])
+                                    print(f'The {loc.getNPC().getNPCName()} replies:')
+                                    loc.getNPC().getNPCSpeechMagicBook()
+                                elif Y_or_N == 'n':
+                                    print(f'The {loc.getNPC().getNPCName()} replies:')
+                                    loc.getNPC().getNPCSpeech()
+                            else:
+                                print("This is not the correct location thingy.")
+                        elif len(loc.getNPC().speech) == 1:
+                            print(f'The {loc.getNPC().getNPCName()} replies:')
+                            loc.getNPC().getNPCSpeech()
                 elif query == 'get stamina potion':
                     if itemPickupPermission == 'Stamina Potion':
                         player.pickUpItem(loc)
@@ -735,6 +771,8 @@ def game_loop():
                     player.useItem()
                 elif query == 'where am i':
                     checkLocation(loc)
+                elif query == 'check master list':
+                    print(master_magic_book_list)
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
