@@ -171,18 +171,6 @@ class Item:
         return self.name
 
 
-class Potion(Item):
-
-    def potionFunction(self, potion):
-        self.potion = potion
-
-
-class KeyItem(Item):
-
-    def magicBooks(self, books):
-        self.books = books
-
-
 class NPC:
 
     def __init__(self, name):
@@ -223,25 +211,14 @@ def createItemInstances(infile_items, all_locations, all_items):
     text_itemCreations = infile_items.readlines()
     for line in text_itemCreations:
         line = line.split()
-        if line[2] == 'Potion':
-            item_name = line[3:]
-            item_name = " ".join(item_name)
-            instancePotion = Potion(item_name)
-            all_items.append(instancePotion)
-        elif line[2] == 'KeyItem':
-            item_name = line[3:]
-            item_name = " ".join(item_name)
-            instanceKeyItem = KeyItem(item_name)
-            all_items.append(instanceKeyItem)
-        elif line[2] == 'Item':
-            item_name = line[3:]
-            item_name = " ".join(item_name)
-            instanceItem = Item(item_name)
-            all_items.append(instanceItem)
+        item_name = line[3:]
+        item_name = " ".join(item_name)
+        instanceItem = Item(item_name)
+        all_items.append(instanceItem)
     appendItemstoLocations(all_items, all_locations)
 
 
-# This function appends the description string to each location
+# This function appends the items to each location; there is exactly 1 item per location
 def appendItemstoLocations(all_items, all_locations):
     for item in all_items:
         item_index_num = all_items.index(item)
