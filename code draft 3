@@ -17,6 +17,9 @@ class Room:
     def add_items(self, item):
         self.items.append(item)
 
+    def remove_items(self):
+        self.items = []
+
     def add_descriptions(self, description):
         self.room_description.append(description)
 
@@ -114,6 +117,7 @@ class Player:
     def pickUpItem(self, location):
         self.itemlist.append(location.items)
         print(f'You picked up a {location.getItem()}.')
+        location.remove_items()
 
     def lookupItems(self, item_check):
         all_my_item_names = []
@@ -134,52 +138,6 @@ class Player:
             all_my_item_names.append(item_name)
         all_my_item_names = ", ".join(all_my_item_names)
         print(f'You are currently holding:\n{all_my_item_names}')
-
-    def useItem(self):
-        self.myItems()
-        itemQuery = input('What would you like to use? ')
-        if itemQuery == 'stamina potion':
-            for item in self.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Stamina Potion':
-                    print('You can\'t use that now!')
-                    return
-            else:
-                print('You don\'t have that.')
-        elif itemQuery == 'stealth potion':
-            for item in self.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Stealth Potion':
-                    print('You can\'t use that now!')
-                    return
-            else:
-                print('You don\'t have that.')
-        elif itemQuery == 'magic potion':
-            for item in self.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Magic Potion':
-                    print('You can\'t use that now!')
-                    return
-            else:
-                print('You don\'t have that.')
-        elif itemQuery == 'bravery potion':
-            for item in self.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Bravery Potion':
-                    print('You can\'t use that now!')
-                    return
-            else:
-                print('You don\'t have that.')
-        elif itemQuery == 'escape book':
-            for item in self.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Escape Book':
-                    print('You can\'t use that now!')
-                    return
-            else:
-                print('You don\'t have that.')
-        elif 'magic book' in itemQuery:
-            pass
 
 
 class Patron:
@@ -387,7 +345,7 @@ def checkLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("""'move'\n'check items'\n'look around'\n'talk'\n'get [item name]'\n'use item'\n'Where am I?'\n\
+    print("""'move'\n'check items'\n'look around'\n'talk'\n'get [item name]'\n'Where am I?'\n\
 'Where can I move?'\n'quit'""")
 
 
@@ -620,6 +578,10 @@ def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery)
         else:
             print('You don\'t have that.')
             patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+    else:
+        print('Sorry, I don\'t quite know what you mean. Try again?')
+        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery)
+        return
 
 
 # Updates stamina, both for increasing it after winning a patron encounter, and decreasing it during the encounter
@@ -789,8 +751,6 @@ def game_loop():
                         print('Sorry, that item can\'t be found here.')
                 elif query == 'check items':
                     player.myItems()
-                elif query == 'use item':
-                    player.useItem()
                 elif query == 'where am i':
                     checkLocation(loc)
                 elif query == 'check master list':
