@@ -634,6 +634,7 @@ def main():
     loc = all_locations[0]
     loc.entering()
     getLocation(loc)
+    print("\nType 'help' to see your options. Try starting by talking to people and moving around.")
     while game is True:
         game_loop()
 
