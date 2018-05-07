@@ -623,6 +623,7 @@ def speechForNPCsWithTwoOptions(loc, item_check, player, master_magic_book_list)
                 player.itemlist.remove(item)
                 master_magic_book_list.append(item[0])
         print(f'The {loc.getNPC().getNPCName()} replies:')
+        loc.getNPC().getNPCSpeech()
         loc.getNPC().getNPCSpeechMagicBook()
         return master_magic_book_list
     elif Y_or_N == 'n':
