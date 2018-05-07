@@ -326,7 +326,8 @@ def characterInitialization():
         return player
     else:
         print('Excuse me? Please try that again.')
-        characterInitialization()
+        player = characterInitialization()
+        return player
 
 
 # This function tells the player where they currently are
