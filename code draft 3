@@ -346,7 +346,7 @@ def checkLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("""'move'\n'check items'\n'look around'\n'talk'\n'get [item name]'\n'Where am I?'\n\
+    print("""'move'\n'check items'\n'check stats'\n'look around'\n'talk'\n'get [item name]'\n'Where am I?'\n\
 'Where can I move?'\n'quit'""")
 
 
@@ -755,6 +755,10 @@ def game_loop():
                     player.myItems()
                 elif query == 'where am i':
                     checkLocation(loc)
+                elif query == 'check stats':
+                    print('Your stats are:')
+                    print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, '
+                          f'Stamina: {player.getStamina()}')
                 elif query == 'check master list':
                     print(master_magic_book_list)
                 elif query == 'quit':
