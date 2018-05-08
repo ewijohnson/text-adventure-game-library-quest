@@ -1,6 +1,8 @@
 Entrance Desk Staff $ "How're you today? Pretty blustery day outside, isn't it?
-If you need anything, just ask anyone you see around the library. Or type 'help'
-for more basic assistance."
+If you need anything, just ask anyone you see around the library. The more people
+you talk to, the more information you'll get! If you're not sure where to start,
+try talking to the Head of Circulation. You can find her in the Circulation Area,
+just east and then north from here."
 
 
 User Experience Librarian $ "Ah, do you have a moment to help me? I can't seem
@@ -12,7 +14,8 @@ around for more. If you see any hidden yellow books, they're probably Escape Boo
 
 Head of Circulation $ "What do you need help with? Items or Magic Books? Or nothing?" $
 "To pick up an item, you have to type the item name. To get a stamina potion, for example, type:
-'get stamina potion'." $
+'get stamina potion'. The items won't be listed by name in the locations, but look for clues like
+colors or word hints that point to what items might be hiding around." $
 "What kind of Magic Book help do you need? Picking up, Checking names, Locating, or Returning? Or nothing?" $
 "To pick up Magic Books, just type 'get magic book'. You do not need to know its exact name." $
 "To check your inventory and see the names of the Magic Books you have, type 'check items'." $
