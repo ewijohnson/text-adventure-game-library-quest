@@ -10,7 +10,23 @@ encounters, but I used all of mine yesterday and haven't had a chance to look
 around for more. If you see any hidden yellow books, they're probably Escape Books."
 
 
-Head of Circulation $ "Can I help you?"
+Head of Circulation $ "What do you need help with? Items or Magic Books? Or nothing?" $
+"To pick up an item, you have to type the item name. To get a stamina potion, for example, type:
+'get stamina potion'." $
+"What kind of Magic Book help do you need? Picking up, Checking names, Locating, or Returning? Or nothing?" $
+"To pick up Magic Books, just type 'get magic book'. You do not need to know its exact name." $
+"To check your inventory and see the names of the Magic Books you have, type 'check items'." $
+"If you need help locating a book, talk to as many people as you can. Listen for the
+books to call out to you." $
+"Which Magic Book do you need help returning? Earth, Fire, Air, Water, Ice, Lightning, or Spirit? Or nothing?" $
+"The Magic Book of Earth goes to an earthy place with a young face." $
+"The Magic Book of Fire goes to one who works with fire." $
+"The Magic Book of Air goes to a jokester in the skies." $
+"The Magic Book of Water goes to an employee at rest." $
+"The Magic Book of Ice goes to one who studies areas of ice and not-ice." $
+"The Magic Book of Lightning goes to one who promotes harnessed lightning." $
+"The Magic Book of Spirit goes to one who wanders and helps." $
+"Okay then."
 
 
 Reference Librarian $ "If you look around, you can find all kinds of items that
