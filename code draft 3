@@ -137,7 +137,10 @@ class Player:
             item_name = item[0].getItemName()
             all_my_item_names.append(item_name)
         all_my_item_names = ", ".join(all_my_item_names)
-        print(f'You are currently holding:\n{all_my_item_names}')
+        if all_my_item_names:
+            print(f'You are currently holding:\n{all_my_item_names}')
+        elif not all_my_item_names:
+            print('You are not currently holding anything.')
 
 
 class Patron:
@@ -194,14 +197,18 @@ def createNPCInstances(infile_npcs, all_locations):
     for line in text_npc_file:
         line = line.split('$')
         if '\nNone' not in line:
-            instanceNPC = NPC(line[0])
-            instanceNPC.speech.append(line[1])
-            try:
-                instanceNPC.speech.append(line[2])
-            except:
-                pass
-            all_locations[num].npc.append(instanceNPC)
-            num += 1
+            if '\nNone\n' not in line:
+                instanceNPC = NPC(line[0])
+                instanceNPC.speech.append(line[1])
+                index_range = 2
+                while index_range < 16:
+                    try:
+                        instanceNPC.speech.append(line[index_range])
+                        index_range += 1
+                    except:
+                        index_range += 1
+                all_locations[num].npc.append(instanceNPC)
+                num += 1
         else:
             num += 1
 
@@ -347,8 +354,8 @@ def change_location(dir_index, loc_self):
         patron_num = random.randint(1, 40)
         if player.stamina <= 15:
             if patron_num <= 20:
-                # These numbers are: (1.lower and 2.upper patron stats for random generation, 3.lower and 4.upper patron 
-                #   stamina for random generation, 5.lower bound of player stamina lost randomly generated, and 6.lower  
+                # These numbers are: (1.lower and 2.upper patron stats for random generation, 3.lower and 4.upper patron
+                #   stamina for random generation, 5.lower bound of player stamina lost randomly generated, and 6.lower
                 #   bound patron stamina lost randomly generated
                 patronEncounter(1, 15, 10, 25, -2, -5)
         elif 15 < player.stamina <= 25:
@@ -413,31 +420,37 @@ def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, save
     random_magic = random.randint(0, 10)
     rand_stamina_reduction = random.randint(patron_stamina_lost, 0)
     rand_patron.stamina += rand_stamina_reduction
-    if player_magic > patron_magic:
-        magic_prob = player_magic - patron_magic
-        if magic_prob > random_magic:
-            print('\nYou successfully confused the patron!')
-            player.magic = saved_magic
-            print("\nYour magic level is now at", update_magic(1))
-            return
-        elif magic_prob <= random_magic:
-            print("\nYour magic didn't work! The patron is still asking questions.")
-            print(f"The patron's stamina is now at {rand_patron.stamina}.")
-            print("Your stamina has decreased! It is now at ", update_stamina(total_player_stamina_lost), '\n')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-    elif player_magic <= patron_magic:
-        magic_prob = 1
-        if magic_prob > random_magic:
-            print('\nYou successfully confused the patron!')
-            print("\nYour magic level is now", update_magic(1))
-            return
-        elif magic_prob <= patron_magic:
-            print("\nYour magic didn't work! The patron is still asking questions.")
-            print(f"The patron's stamina is now at {rand_patron.stamina}.")
-            print("Your stamina has decreased! It is now at ", update_stamina(player_stamina_lost), '\n')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
+    if rand_patron.stamina > 0:
+        if player_magic > patron_magic:
+            magic_prob = player_magic - patron_magic
+            if magic_prob > random_magic:
+                print('\nYou successfully confused the patron!')
+                player.magic = saved_magic
+                print("\nYour magic level is now at", update_magic(1))
+                return
+            elif magic_prob <= random_magic:
+                print("\nYour magic didn't work! The patron is still asking questions.")
+                print(f"The patron's stamina is now at {rand_patron.stamina}.")
+                print("Your stamina has decreased! It is now at ", update_stamina(total_player_stamina_lost), '\n')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                    patron_stamina_lost)
+        elif player_magic <= patron_magic:
+            magic_prob = 1
+            if magic_prob > random_magic:
+                print('\nYou successfully confused the patron!')
+                print("\nYour magic level is now", update_magic(1))
+                return
+            elif magic_prob <= patron_magic:
+                print("\nYour magic didn't work! The patron is still asking questions.")
+                print(f"The patron's stamina is now at {rand_patron.stamina}.")
+                print("Your stamina has decreased! It is now at ", update_stamina(player_stamina_lost), '\n')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                    patron_stamina_lost)
+    elif rand_patron.stamina <= 0:
+        print('\nYou successfully helped the patron!')
+        player.magic = saved_magic
+        print("\nYour magic level is now at", update_magic(1))
+        return
 
 
 # Bravery decreases patron stamina by a random amount each turn (including 0).
@@ -735,6 +748,47 @@ def game_loop():
                         elif len(loc.getNPC().speech) == 1:
                             print(f'The {loc.getNPC().getNPCName()} replies:')
                             loc.getNPC().getNPCSpeech()
+                        elif len(loc.getNPC().speech) == 15:
+                            print(f'The {loc.getNPC().getNPCName()} replies:')
+                            circ_query = input(f'{loc.getNPC().speech[0].strip()} ')
+                            if circ_query == 'items':
+                                print(loc.getNPC().speech[1])
+                            elif circ_query == 'magic books':
+                                circ_MB_query = input(f'{loc.getNPC().speech[2]} ')
+                                if circ_MB_query == 'picking up':
+                                    print(loc.getNPC().speech[3])
+                                elif circ_MB_query == 'checking names':
+                                    print(loc.getNPC().speech[4])
+                                elif circ_MB_query == 'locating':
+                                    print(loc.getNPC().speech[5])
+                                elif circ_MB_query == 'returning':
+                                    circ_MB_returning_query = input(f'{loc.getNPC().speech[6]} ')
+                                    if circ_MB_returning_query == 'earth':
+                                        print(loc.getNPC().speech[7])
+                                    elif circ_MB_returning_query == 'fire':
+                                        print(loc.getNPC().speech[8])
+                                    elif circ_MB_returning_query == 'air':
+                                        print(loc.getNPC().speech[9])
+                                    elif circ_MB_returning_query == 'water':
+                                        print(loc.getNPC().speech[10])
+                                    elif circ_MB_returning_query == 'ice':
+                                        print(loc.getNPC().speech[11])
+                                    elif circ_MB_returning_query == 'lightning':
+                                        print(loc.getNPC().speech[12])
+                                    elif circ_MB_returning_query == 'spirit':
+                                        print(loc.getNPC().speech[13])
+                                    elif circ_MB_returning_query == 'nothing':
+                                        print(loc.getNPC().speech[14])
+                                    else:
+                                        print('"I didn\'t quite understand you. Come again?"')
+                                elif circ_MB_query == 'nothing':
+                                    print(loc.getNPC().speech[14])
+                                else:
+                                    print('"I didn\'t quite understand you. Come again?"')
+                            elif circ_query == 'nothing':
+                                print(loc.getNPC().speech[14])
+                            else:
+                                print('"I didn\'t quite understand you. Come again?"')
                 elif query == 'get stamina potion':
                     if itemPickupPermission == 'Stamina Potion':
                         player.pickUpItem(loc)
