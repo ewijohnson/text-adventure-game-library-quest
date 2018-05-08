@@ -300,13 +300,13 @@ def characterInitialization():
     name_input = input('What is your name? ')
     role_input = input('Would you like to start the game with more stealth, magic, or bravery? ')
     if role_input == 'stealth':
-        player = Player(name_input, [8, 5, 5], 10, [])
+        player = Player(name_input, [8, 5, 5], 15, [])
         return player
     elif role_input == 'magic':
-        player = Player(name_input, [5, 8, 5], 10, [])
+        player = Player(name_input, [5, 8, 5], 15, [])
         return player
     elif role_input == 'bravery':
-        player = Player(name_input, [5, 5, 8], 10, [])
+        player = Player(name_input, [5, 5, 8], 15, [])
         return player
     else:
         print('Excuse me? Please try that again.')
@@ -330,7 +330,7 @@ def checkLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("""'move'\n'check items'\n'check stats'\n'look around'\n'talk'\n'get [item name]'\n'Where am I?'\n\
+    print("""'move'\n'talk'\n'get [item name]'\n'look around'\n'check items'\n'check stats'\n'Where am I?'
 'Where can I move?'\n'quit'""")
 
 
@@ -352,25 +352,25 @@ def change_location(dir_index, loc_self):
         loc_self.leaving()
         # This part of the function prepares the parameters for random patron stats, based on the player's level
         patron_num = random.randint(1, 40)
-        if player.stamina <= 15:
+        if player.stamina <= 25:
             if patron_num <= 20:
                 # These numbers are: (1.lower and 2.upper patron stats for random generation, 3.lower and 4.upper patron
                 #   stamina for random generation, 5.lower bound of player stamina lost randomly generated, and 6.lower
                 #   bound patron stamina lost randomly generated
                 patronEncounter(1, 15, 10, 25, -2, -5)
-        elif 15 < player.stamina <= 25:
+        elif 25 < player.stamina <= 35:
             if patron_num <= 20:
                 patronEncounter(5, 25, 15, 35, -3, -6)
-        elif 25 < player.stamina <= 35:
-            if patron_num <= 25:
-                patronEncounter(10, 35, 20, 45, -4, -7)
         elif 35 < player.stamina <= 45:
             if patron_num <= 25:
-                patronEncounter(15, 45, 25, 55, -5, -8)
+                patronEncounter(10, 35, 20, 45, -4, -7)
         elif 45 < player.stamina <= 55:
+            if patron_num <= 25:
+                patronEncounter(15, 45, 25, 55, -5, -8)
+        elif 55 < player.stamina <= 65:
             if patron_num <= 30:
                 patronEncounter(20, 55, 30, 65, -6, -9)
-        elif 55 < player.stamina:
+        elif 65 < player.stamina:
             if patron_num <= 30:
                 patronEncounter(25, 65, 35, 75, -7, -10)
     elif loc_self.directions[dir_index] == 'None':
