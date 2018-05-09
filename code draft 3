@@ -528,88 +528,92 @@ def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, 
 # Describes what happens during a patron encounter when player uses an item
 def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost):
     player.myItems()
-    itemQuery = input('What would you like to use? ')
-    if itemQuery == 'stamina potion':
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if item_name == 'Stamina Potion':
-                player.itemlist.remove(item)
-                print(f'Your stamina is now at {update_stamina(10)}.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-                return
-        else:
-            print('You don\'t have that.')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-    elif itemQuery == 'stealth potion':
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if item_name == 'Stealth Potion':
-                player.itemlist.remove(item)
-                print(f'Your stealth is now temporarily at {update_sneak(10)}.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-                return
+    if player.itemlist:
+        itemQuery = input('What would you like to use? ')
+        if itemQuery == 'stamina potion':
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Stamina Potion':
+                    player.itemlist.remove(item)
+                    print(f'Your stamina is now at {update_stamina(10)}.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+                    return
             else:
                 print('You don\'t have that.')
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
-    elif itemQuery == 'magic potion':
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if item_name == 'Magic Potion':
-                player.itemlist.remove(item)
-                print(f'Your magic is now temporarily at {update_magic(10)}.')
+        elif itemQuery == 'stealth potion':
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Stealth Potion':
+                    player.itemlist.remove(item)
+                    print(f'Your stealth is now temporarily at {update_sneak(10)}.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+                    return
+                else:
+                    print('You don\'t have that.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+        elif itemQuery == 'magic potion':
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Magic Potion':
+                    player.itemlist.remove(item)
+                    print(f'Your magic is now temporarily at {update_magic(10)}.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+                    return
+            else:
+                print('You don\'t have that.')
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
-                return
-        else:
-            print('You don\'t have that.')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-    elif itemQuery == 'bravery potion':
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if item_name == 'Bravery Potion':
-                player.itemlist.remove(item)
-                print(f'Your bravery is now temporarily at {update_bravery(10)}.')
+        elif itemQuery == 'bravery potion':
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Bravery Potion':
+                    player.itemlist.remove(item)
+                    print(f'Your bravery is now temporarily at {update_bravery(10)}.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+                    return
+            else:
+                print('You don\'t have that.')
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
-                return
-        else:
-            print('You don\'t have that.')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-    elif itemQuery == 'escape book':
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if item_name == 'Escape Book':
-                player.itemlist.remove(item)
-                print(f'You escaped the patron!')
-                return
-        else:
-            print('You don\'t have that.')
-            patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-    elif 'magic book' in itemQuery:
-        for item in player.itemlist:
-            item_name = item[0].getItemName()
-            if 'Magic Book' in item_name:
-                print('You can\'t use that now!')
+        elif itemQuery == 'escape book':
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if item_name == 'Escape Book':
+                    player.itemlist.remove(item)
+                    print(f'You escaped the patron!')
+                    return
+            else:
+                print('You don\'t have that.')
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
-                return
+        elif 'magic book' in itemQuery:
+            for item in player.itemlist:
+                item_name = item[0].getItemName()
+                if 'Magic Book' in item_name:
+                    print('You can\'t use that now!')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+                    return
+            else:
+                print('You don\'t have that.')
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                    patron_stamina_lost)
         else:
-            print('You don\'t have that.')
+            print('Sorry, I don\'t quite know what you mean. Try again?')
             patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                 patron_stamina_lost)
+            return
     else:
-        print('Sorry, I don\'t quite know what you mean. Try again?')
         patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                            patron_stamina_lost)
+                                patron_stamina_lost)
         return
-
 
 # Updates stamina, both for increasing it after winning a patron encounter, and decreasing it during the encounter
 def update_stamina(num):
@@ -677,6 +681,10 @@ def initialization():
     initialization_answer(opening_choice)
 
 
+def conclusion():
+    print('This is the conclusion!')
+
+
 # Sets up the first location and primes the beginning of the game_loop
 def main():
     game = True
@@ -686,7 +694,20 @@ def main():
     print("\nType 'help' to see your options. Try starting by talking to people and moving around.")
     master_magic_book_list = []
     while game is True:
-        game_loop(master_magic_book_list)
+        while len(master_magic_book_list) != 7:
+            game_loop(master_magic_book_list)
+        saved_stealth = player.getStealth()
+        saved_magic = player.getMagic()
+        saved_bravery = player.getBravery()
+        final_boss = Patron([random.randint(65, 75), random.randint(65, 75), random.randint(65, 75)], random.randint(75, 85))
+        print("\nThe Library Board Director appears!")
+        try:
+            patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, -8, -12)
+        except RuntimeError:
+            sys.exit()
+        print("\nYou successfully dealt with the Library Board Director! Congratulations!")
+        game = False
+    conclusion()
 
 
 # The heart of the game, where all other functions come from, lead to, or return to
@@ -829,6 +850,8 @@ def game_loop(master_magic_book_list):
                           f'Stamina: {player.getStamina()}')
                 elif query == 'check master list':
                     print(master_magic_book_list)
+                elif query == 'add master list':
+                    master_magic_book_list.append('a')
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
