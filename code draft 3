@@ -53,7 +53,8 @@ class Room:
         print(self.room_description[0])
 
     def move(self, loc_room):
-        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west'>: ")
+        direction_input = input("\nEnter a direction <'North', 'East', 'South', 'West'>: ")
+        direction_input = direction_input.lower().strip()
         move_list = ['north', 'east', 'south', 'west']
         if direction_input in move_list:
             direction_input_function(direction_input, loc_room)
@@ -80,7 +81,8 @@ class Room:
 class ElevatorRoom(Room):
 
     def move_floors(self, loc_room):
-        direction_input = input("\nEnter a direction <'north', 'east', 'south', 'west', 'up', 'down'>: ")
+        direction_input = input("\nEnter a direction <'North', 'East', 'South', 'West', 'Up', 'Down'>: ")
+        direction_input = direction_input.lower().strip()
         move_floors_list = ['north', 'east', 'south', 'west', 'up', 'down']
         if direction_input in move_floors_list:
             direction_input_function(direction_input, loc_room)
@@ -137,7 +139,7 @@ class Player:
         for item in self.itemlist:
             item_name = item[0].getItemName()
             all_my_item_names.append(item_name)
-        # Dictionary counter to display items held in a user friendly way
+        # Dictionary counter to display held items in a user friendly way
         if all_my_item_names:
             for item in all_my_item_names:
                 if item in item_dict:
@@ -305,17 +307,28 @@ def introduction():
 
 # This function initializes the player's character at the beginning, granting a slight advantage in one of three categories
 def characterInitialization():
-    name_input = input('What is your name? ')
-    role_input = input('Would you like to start the game with more stealth, magic, or bravery? ')
-    if role_input == 'stealth':
-        player = Player(name_input, [8, 5, 5], 15, [])
-        return player
-    elif role_input == 'magic':
-        player = Player(name_input, [5, 8, 5], 15, [])
-        return player
-    elif role_input == 'bravery':
-        player = Player(name_input, [5, 5, 8], 15, [])
-        return player
+    name_input = input("What is your name? ")
+    if name_input:
+        role_input = input("Would you like to start the game with more Stealth, Magic, or Bravery? ")
+        if role_input:
+            role_input = role_input[0].lower().strip()
+            if role_input == 's':
+                player = Player(name_input, [8, 5, 5], 15, [])
+                return player
+            elif role_input == 'm':
+                player = Player(name_input, [5, 8, 5], 15, [])
+                return player
+            elif role_input == 'b':
+                player = Player(name_input, [5, 5, 8], 15, [])
+                return player
+            else:
+                print('Excuse me? Please try that again.')
+                player = characterInitialization()
+                return player
+        else:
+            print('Excuse me? Please try that again.')
+            player = characterInitialization()
+            return player
     else:
         print('Excuse me? Please try that again.')
         player = characterInitialization()
@@ -338,8 +351,8 @@ def checkLocation(place):
 def getLocationHelp():
     print("\nYou have a few options for actions.")
     print("Enter one of the following:")
-    print("""'move'\n'talk'\n'get [item name]'\n'look around'\n'check items'\n'check stats'\n'Where am I?'
-'Where can I move?'\n'quit'""")
+    print("""'Move'\n'Talk'\n'Get item'\n'Look around'\n'Check items'\n'Check stats'\n'Where am I?'
+'Where can I move?'\n'Quit'""")
 
 
 # This gets the index number of the list of directions, allowing the change location function to work for all six directions
@@ -512,20 +525,22 @@ def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStamin
 
 # This function sets up the encounter with patrons, getting input from the player
 def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost):
-    encounter_input = input('What would you like to do? <"Sneak away", "Use magic", "Help patron", "Use item"> ')
-    if encounter_input[:5] == 'sneak':
+    encounter_input = input("What would you like to do? <'Sneak away', 'Use magic', 'Help patron', 'Use item'> ")
+    encounter_input1 = encounter_input[:5].lower().strip().strip('\'')
+    encounter_input2 = encounter_input.lower().strip().strip('s')
+    if encounter_input1 == 'sneak':
         encounter_sneak(rand_patron, player.stealth, rand_patron.stealth, saved_stealth, saved_magic, saved_bravery,
                         player_stamina_lost, patron_stamina_lost)
         return
-    elif encounter_input == 'use magic':
+    elif encounter_input1 == 'use m' or encounter_input2 == 'magic':
         encounter_magic(rand_patron, player.magic, rand_patron.magic, saved_stealth, saved_magic, saved_bravery,
                         player_stamina_lost, patron_stamina_lost)
         return
-    elif encounter_input == 'help patron':
+    elif encounter_input1 == 'help':
         encounter_bravery(rand_patron, player.bravery, rand_patron.bravery, saved_stealth, saved_magic, saved_bravery,
                           player_stamina_lost, patron_stamina_lost)
         return
-    elif encounter_input == 'use item':
+    elif encounter_input1 == 'use i' or encounter_input2 == 'item':
         encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost)
         return
     else:
@@ -537,87 +552,95 @@ def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, 
 def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost):
     player.myItems()
     if player.itemlist:
-        itemQuery = input('\nWhat would you like to use? ')
-        if itemQuery == 'stamina potion':
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Stamina Potion':
-                    player.itemlist.remove(item)
-                    print(f'Your stamina is now at {update_stamina(10)}.')
-                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                        patron_stamina_lost)
-                    return
-            else:
-                print('You don\'t have that.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-        elif itemQuery == 'stealth potion':
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Stealth Potion':
-                    player.itemlist.remove(item)
-                    print(f'Your stealth is now temporarily at {update_sneak(10)}.')
-                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                        patron_stamina_lost)
-                    return
+        itemQuery = input("\nWhat would you like to use? ")
+        if itemQuery:
+            itemQuery = itemQuery.lower().strip()
+            if itemQuery == 'stamina potion':
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if item_name == 'Stamina Potion':
+                        player.itemlist.remove(item)
+                        print(f'Your stamina is now at {update_stamina(10)}.')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+                        return
                 else:
                     print('You don\'t have that.')
                     patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                         patron_stamina_lost)
-        elif itemQuery == 'magic potion':
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Magic Potion':
-                    player.itemlist.remove(item)
-                    print(f'Your magic is now temporarily at {update_magic(10)}.')
+            elif itemQuery == 'stealth potion':
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if item_name == 'Stealth Potion':
+                        player.itemlist.remove(item)
+                        print(f'Your stealth is now temporarily at {update_sneak(10)}.')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+                        return
+                    else:
+                        print('You don\'t have that.')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+            elif itemQuery == 'magic potion':
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if item_name == 'Magic Potion':
+                        player.itemlist.remove(item)
+                        print(f'Your magic is now temporarily at {update_magic(10)}.')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+                        return
+                else:
+                    print('You don\'t have that.')
                     patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                         patron_stamina_lost)
-                    return
-            else:
-                print('You don\'t have that.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-        elif itemQuery == 'bravery potion':
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Bravery Potion':
-                    player.itemlist.remove(item)
-                    print(f'Your bravery is now temporarily at {update_bravery(10)}.')
+            elif itemQuery == 'bravery potion':
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if item_name == 'Bravery Potion':
+                        player.itemlist.remove(item)
+                        print(f'Your bravery is now temporarily at {update_bravery(10)}.')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+                        return
+                else:
+                    print('You don\'t have that.')
                     patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                         patron_stamina_lost)
-                    return
-            else:
-                print('You don\'t have that.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-        elif itemQuery == 'escape book':
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if item_name == 'Escape Book':
-                    player.itemlist.remove(item)
-                    print(f'You escaped the patron!')
-                    return
-            else:
-                print('You don\'t have that.')
-                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                    patron_stamina_lost)
-        elif 'magic book' in itemQuery:
-            for item in player.itemlist:
-                item_name = item[0].getItemName()
-                if 'Magic Book' in item_name:
-                    print('You can\'t use that now!')
+            elif itemQuery == 'escape book':
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if item_name == 'Escape Book':
+                        player.itemlist.remove(item)
+                        print(f'You escaped the patron!')
+                        return
+                else:
+                    print('You don\'t have that.')
                     patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                         patron_stamina_lost)
-                    return
+            elif 'magic book' in itemQuery:
+                for item in player.itemlist:
+                    item_name = item[0].getItemName()
+                    if 'Magic Book' in item_name:
+                        print('You can\'t use that now!')
+                        patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                            patron_stamina_lost)
+                        return
+                else:
+                    print('You don\'t have that.')
+                    patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
+            elif itemQuery[0] == 'n':
+                patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
+                                        patron_stamina_lost)
             else:
-                print('You don\'t have that.')
+                print('Sorry, I don\'t quite know what you mean. Try again?')
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
+                return
         else:
-            print('Sorry, I don\'t quite know what you mean. Try again?')
             patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
-                                patron_stamina_lost)
-            return
+                                        patron_stamina_lost)
     else:
         patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                 patron_stamina_lost)
@@ -685,8 +708,12 @@ def initialization_answer(choice):
 # Asks the player if they would like to enter the library and begin the game
 def initialization():
     opening_choice = input("Would you like to enter the library? ")
-    opening_choice = opening_choice[0].lower()
-    initialization_answer(opening_choice)
+    if opening_choice:
+        opening_choice = opening_choice[0].lower()
+        initialization_answer(opening_choice)
+    else:
+        print("What was that? Please try again.")
+        initialization()
 
 
 def conclusion():
@@ -707,7 +734,7 @@ def main():
         saved_stealth = player.getStealth()
         saved_magic = player.getMagic()
         saved_bravery = player.getBravery()
-        final_boss = Patron([random.randint(65, 75), random.randint(65, 75), random.randint(65, 75)], random.randint(75, 85))
+        final_boss = Patron([random.randint(6, 7), random.randint(6, 7), random.randint(6, 7)], random.randint(7, 8))
         print("\nThe Library Board Director appears!")
         for item in player.itemlist:
             item_name = item[0].getItemName()
@@ -718,9 +745,13 @@ def main():
             patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, -8, -12)
         except RuntimeError:
             sys.exit()
-        print("\nYou successfully dealt with the Library Board Director! Congratulations!")
+        print("\nYou successfully dealt with the Library Board Director! Congratulations!\n")
         game = False
     conclusion()
+    print('\nYour final stats are:')
+    print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: '
+          f'{player.getStamina()}')
+    print('Thanks for playing!')
 
 
 # The heart of the game, where all other functions come from, lead to, or return to
@@ -732,13 +763,13 @@ def game_loop(master_magic_book_list):
             #     and self.leaving() methods
             while loc.inRoom() is True:
                 itemPickupPermission = loc.getItem()
-                query = input('\nWhat would you like to do? ')
-                query = query.lower()
-                query = query.strip('?')
-                # the 'help' query will allow the player to see all possible actions
+                query = input("\nWhat would you like to do? ")
+                query = query.lower().strip().strip('\'').strip('s').strip('?').strip('.').strip(',')
+                # The 'help' query will allow the player to see all possible actions
                 if query == 'help':
                     getLocationHelp()
-                elif query[:4] == 'move':
+                # The 'move' query
+                elif query == 'move':
                     # This checks to see if the current room is subclass ElevatorRoom or class Room
                     if isinstance(loc, ElevatorRoom):
                         # if class ElevatorRoom, there are more movement options (up or down, additionally)
@@ -748,11 +779,13 @@ def game_loop(master_magic_book_list):
                         # if class is just Room, there are just the basic four movement options
                         loc.move(loc)
                         break
-                # Where can I move?
-                elif query[:13] == 'where can i m':
+                # The 'Where can I move?' query
+                elif query[:7] == 'where c':
                     loc.whereCanIMove()
-                elif query == 'look around':
+                # The 'look around' query
+                elif query[:4] == 'look':
                     loc.getDescription()
+                # The 'talk' query
                 elif query == 'talk':
                     if len(loc.checkNPC()) == 0:
                         print('There is no one here to talk to.')
@@ -784,19 +817,28 @@ def game_loop(master_magic_book_list):
                             loc.getNPC().getNPCSpeech()
                         elif len(loc.getNPC().speech) == 15:
                             print(f'The {loc.getNPC().getNPCName()} replies:')
-                            circ_query = input(f'{loc.getNPC().speech[0].strip()} ')
-                            if circ_query == 'items':
+                            circ_query = input(f'{loc.getNPC().speech[0].strip()}')
+                            circ_query = circ_query[:4].lower().strip()
+                            # Query for 'items'
+                            if circ_query == 'item':
                                 print(loc.getNPC().speech[1])
-                            elif circ_query == 'magic books':
-                                circ_MB_query = input(f'{loc.getNPC().speech[2]} ')
-                                if circ_MB_query == 'picking up':
+                            # Query for 'magic books'
+                            elif circ_query == 'magi':
+                                circ_MB_query = input(f'{loc.getNPC().speech[2]}')
+                                circ_MB_query = circ_MB_query[:4].lower().strip()
+                                # Query for 'picking up'
+                                if circ_MB_query == 'pick':
                                     print(loc.getNPC().speech[3])
-                                elif circ_MB_query == 'checking names':
+                                # Query for 'checking names'
+                                elif circ_MB_query == 'chec':
                                     print(loc.getNPC().speech[4])
-                                elif circ_MB_query == 'locating':
+                                # Query for 'locating'
+                                elif circ_MB_query == 'loca':
                                     print(loc.getNPC().speech[5])
-                                elif circ_MB_query == 'returning':
-                                    circ_MB_returning_query = input(f'{loc.getNPC().speech[6]} ')
+                                # Query for 'returning'
+                                elif circ_MB_query == 'retu':
+                                    circ_MB_returning_query = input(f'{loc.getNPC().speech[6]}')
+                                    circ_MB_returning_query = circ_MB_returning_query.lower().strip()
                                     if circ_MB_returning_query == 'earth':
                                         print(loc.getNPC().speech[7])
                                     elif circ_MB_returning_query == 'fire':
@@ -823,41 +865,53 @@ def game_loop(master_magic_book_list):
                                 print(loc.getNPC().speech[14])
                             else:
                                 print('"I didn\'t quite understand you. Come again?"')
-                elif query == 'get stamina potion':
-                    if itemPickupPermission == 'Stamina Potion':
-                        player.pickUpItem(loc)
+                # The 'get item' query
+                elif query == 'get item':
+                    if itemPickupPermission:
+                        get_item_query = input("What item are you trying to get? ")
+                        get_item_query = get_item_query[:7].lower().strip()
+                        if get_item_query == 'stamina':
+                            if itemPickupPermission == 'Stamina Potion':
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        elif get_item_query == 'stealth':
+                            if itemPickupPermission == 'Stealth Potion':
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        elif get_item_query == 'magic p':
+                            if itemPickupPermission == 'Magic Potion':
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        elif get_item_query == 'bravery':
+                            if itemPickupPermission == 'Bravery Potion':
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        elif get_item_query == 'escape':
+                            if itemPickupPermission == 'Escape Book':
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        elif get_item_query == 'magic b':
+                            if 'Magic Book' in itemPickupPermission:
+                                player.pickUpItem(loc)
+                            else:
+                                print('Sorry, that item can\'t be found here.')
+                        else:
+                            print('I\'m not sure what you\'re trying to get.')
                     else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'get stealth potion':
-                    if itemPickupPermission == 'Stealth Potion':
-                        player.pickUpItem(loc)
-                    else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'get magic potion':
-                    if itemPickupPermission == 'Magic Potion':
-                        player.pickUpItem(loc)
-                    else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'get bravery potion':
-                    if itemPickupPermission == 'Bravery Potion':
-                        player.pickUpItem(loc)
-                    else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'get escape book':
-                    if itemPickupPermission == 'Escape Book':
-                        player.pickUpItem(loc)
-                    else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'get magic book':
-                    if 'Magic Book' in itemPickupPermission:
-                        player.pickUpItem(loc)
-                    else:
-                        print('Sorry, that item can\'t be found here.')
-                elif query == 'check items':
+                        print('There are no more items here.')
+                # The 'check items' query
+                elif query == 'check item':
                     player.myItems()
-                elif query == 'where am i':
+                # The 'Where am I?' query
+                elif query[:7] == 'where a':
                     checkLocation(loc)
-                elif query == 'check stats':
+                # The 'check stats' query
+                elif query == 'check stat':
                     print('Your stats are:')
                     print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, '
                           f'Stamina: {player.getStamina()}')
@@ -876,7 +930,7 @@ def game_loop(master_magic_book_list):
                     else:
                         print("I didn't understand you.")
                 else:
-                    print('Didn\'t think of that option yet. Nice.')
+                    print('I\'m not quite sure what you\'re trying to do.')
         except RuntimeError:
             sys.exit()
         except:
