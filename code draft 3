@@ -701,6 +701,11 @@ def main():
         saved_bravery = player.getBravery()
         final_boss = Patron([random.randint(65, 75), random.randint(65, 75), random.randint(65, 75)], random.randint(75, 85))
         print("\nThe Library Board Director appears!")
+        for item in player.itemlist:
+            item_name = item[0].getItemName()
+            if item_name == 'Escape Book':
+                player.itemlist.remove(item)
+        print('Uh-oh, it looks like you lost all your Escape Books.\n')
         try:
             patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, -8, -12)
         except RuntimeError:
