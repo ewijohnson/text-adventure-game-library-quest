@@ -447,7 +447,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, save
                 patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost,
                                     patron_stamina_lost)
     elif rand_patron.stamina <= 0:
-        print('\nYou successfully helped the patron!')
+        print('\nYou successfully confused the patron!')
         player.magic = saved_magic
         print("\nYour magic level is now at", update_magic(1))
         return
@@ -684,13 +684,13 @@ def main():
     loc.entering()
     getLocation(loc)
     print("\nType 'help' to see your options. Try starting by talking to people and moving around.")
+    master_magic_book_list = []
     while game is True:
-        game_loop()
+        game_loop(master_magic_book_list)
 
 
 # The heart of the game, where all other functions come from, lead to, or return to
-def game_loop():
-    master_magic_book_list = []
+def game_loop(master_magic_book_list):
     # Loops through each location one by one. This allows for distinct actions to be done in each of the 52 locations
     for loc in all_locations:
         try:
