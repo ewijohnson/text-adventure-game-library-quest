@@ -133,12 +133,20 @@ class Player:
 
     def myItems(self):
         all_my_item_names = []
+        item_dict = {}
         for item in self.itemlist:
             item_name = item[0].getItemName()
             all_my_item_names.append(item_name)
-        all_my_item_names = ", ".join(all_my_item_names)
+        # Dictionary counter to display items held in a user friendly way
         if all_my_item_names:
-            print(f'You are currently holding:\n{all_my_item_names}')
+            for item in all_my_item_names:
+                if item in item_dict:
+                    item_dict[item] = item_dict[item] + 1
+                else:
+                    item_dict[item] = 1
+            print('\nYou are currently holding:')
+            for i in item_dict:
+                print(f'{i} x{item_dict[i]}')
         elif not all_my_item_names:
             print('You are not currently holding anything.')
 
@@ -529,7 +537,7 @@ def patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, 
 def encounter_item_usage(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost):
     player.myItems()
     if player.itemlist:
-        itemQuery = input('What would you like to use? ')
+        itemQuery = input('\nWhat would you like to use? ')
         if itemQuery == 'stamina potion':
             for item in player.itemlist:
                 item_name = item[0].getItemName()
