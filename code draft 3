@@ -93,8 +93,9 @@ class ElevatorRoom(Room):
 
 class Player:
 
-    def __init__(self, name, stats, stamina, items):
+    def __init__(self, name, level, stats, stamina, items):
         self.name = name
+        self.level = level
         self.stats = stats
         self.stealth = stats[0]
         self.magic = stats[1]
@@ -327,13 +328,13 @@ def characterInitialization():
         if role_input:
             role_input = role_input[0].lower().strip()
             if role_input == 's':
-                player = Player(name_input, [8, 5, 5], 15, [])
+                player = Player(name_input, 1, [8, 5, 5], 15, [])
                 return player
             elif role_input == 'm':
-                player = Player(name_input, [5, 8, 5], 15, [])
+                player = Player(name_input, 1, [5, 8, 5], 15, [])
                 return player
             elif role_input == 'b':
-                player = Player(name_input, [5, 5, 8], 15, [])
+                player = Player(name_input, 1, [5, 5, 8], 15, [])
                 return player
             else:
                 print('Excuse me? Please try that again.')
@@ -376,7 +377,7 @@ def direction_input_function(direction, loc_room_loc):
     change_location(dir_num, loc_room_loc)
 
 
-# This function handles the actions when the player moves from location to location
+# This function handles the actions when the player moves from location to location, including if a patron is encountered
 def change_location(dir_index, loc_self):
     if loc_self.directions[dir_index] != 'None':
         # This enters the new location, setting it to True
@@ -386,28 +387,34 @@ def change_location(dir_index, loc_self):
         # This leaves the old location, setting it back to False
         loc_self.leaving()
         # This part of the function prepares the parameters for random patron stats, based on the player's level
-        patron_num = random.randint(1, 40)
-        if player.stamina <= 25:
-            if patron_num <= 20:
-                # These numbers are: (1.lower and 2.upper patron stats for random generation, 3.lower and 4.upper patron
-                #   stamina for random generation, 5.lower bound of player stamina lost randomly generated, and 6.lower
-                #   bound patron stamina lost randomly generated
-                patronEncounter(1, 15, 10, 25, -2, -5)
-        elif 25 < player.stamina <= 35:
-            if patron_num <= 20:
-                patronEncounter(5, 25, 15, 35, -3, -6)
-        elif 35 < player.stamina <= 45:
-            if patron_num <= 25:
-                patronEncounter(10, 35, 20, 45, -4, -7)
-        elif 45 < player.stamina <= 55:
-            if patron_num <= 25:
-                patronEncounter(15, 45, 25, 55, -5, -8)
-        elif 55 < player.stamina <= 65:
-            if patron_num <= 30:
-                patronEncounter(20, 55, 30, 65, -6, -9)
-        elif 65 < player.stamina:
-            if patron_num <= 30:
-                patronEncounter(25, 65, 35, 75, -7, -10)
+        patron_num = random.randint(1, 1000)
+        global patron_chance
+        patron_chance = 500
+        if patron_num <= patron_chance:
+            if player.level == 1:
+                global stam_num_upper, low_pat_stat, up_pat_stat, low_pat_stam, up_pat_stam, low_play_stam_lost, low_pat_stam_lost, \
+                    difficulty_adjuster
+                stam_num_upper = 20
+                low_pat_stat = 1
+                up_pat_stat = 20
+                low_pat_stam = 10
+                up_pat_stam = 20
+                low_play_stam_lost = -2
+                low_pat_stam_lost = -2
+                difficulty_adjuster = 0
+            patronEncounter(low_pat_stat, up_pat_stat, low_pat_stam, up_pat_stam, low_play_stam_lost, low_pat_stam_lost)
+            if player.stamina == stam_num_upper:
+                patron_chance += 15
+                player.level += 1
+                print(f'\nYou leveled up! You are now level {player.level}.')
+                stam_num_upper += (5 + difficulty_adjuster)
+                low_pat_stat += (5 + difficulty_adjuster)
+                up_pat_stat += (5 + difficulty_adjuster)
+                low_pat_stam += (5 + difficulty_adjuster)
+                up_pat_stam += (5 + difficulty_adjuster)
+                low_play_stam_lost += -1
+                low_pat_stam_lost += -1
+                difficulty_adjuster += 2
     elif loc_self.directions[dir_index] == 'None':
         print("\nThat room doesn't exist. Try again.")
 
@@ -426,7 +433,7 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth, saved_stealth, 
         if stealth_prob > random_stealth:
             print('\nYou successfully snuck away!')
             player.stealth = saved_stealth
-            print("\nYour stealth level is now at", update_sneak(1))
+            print(f'"\nYour stealth capacity is now", update_sneak(1).')
             return
         elif stealth_prob <= random_stealth:
             print("\nYou weren't stealthy enough! The patron is still asking questions.")
@@ -438,7 +445,7 @@ def encounter_sneak(rand_patron, player_stealth, patron_stealth, saved_stealth, 
         stealth_prob = 1
         if stealth_prob > random_stealth:
             print('\nYou successfully snuck away!')
-            print("\nYour stealth level is now", update_sneak(1))
+            print(f'"\nYour stealth capacity is now", update_sneak(1).')
             return
         elif stealth_prob <= patron_stealth:
             print("\nYou weren't stealthy enough! The patron is still asking questions.")
@@ -461,7 +468,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, save
             if magic_prob > random_magic:
                 print('\nYou successfully confused the patron!')
                 player.magic = saved_magic
-                print("\nYour magic level is now at", update_magic(1))
+                print(f'"\nYour magic capacity is now", update_magic(1).')
                 return
             elif magic_prob <= random_magic:
                 print("\nYour magic didn't work! The patron is still asking questions.")
@@ -473,7 +480,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, save
             magic_prob = 1
             if magic_prob > random_magic:
                 print('\nYou successfully confused the patron!')
-                print("\nYour magic level is now", update_magic(1))
+                print(f'"\nYour magic capacity is now", update_magic(1).')
                 return
             elif magic_prob <= patron_magic:
                 print("\nYour magic didn't work! The patron is still asking questions.")
@@ -484,7 +491,7 @@ def encounter_magic(rand_patron, player_magic, patron_magic, saved_stealth, save
     elif rand_patron.stamina <= 0:
         print('\nYou successfully confused the patron!')
         player.magic = saved_magic
-        print("\nYour magic level is now at", update_magic(1))
+        print(f'"\nYour magic capacity is now", update_magic(1).')
         return
 
 
@@ -495,7 +502,7 @@ def encounter_bravery(rand_patron, player_bravery, patron_bravery, saved_stealth
     if player_bravery > patron_bravery:
         print('\nYou successfully helped the patron!')
         player.bravery = saved_bravery
-        print("\nYour bravery level is now at", update_bravery(1))
+        print(f'"\nYour bravery capacity is now", update_bravery(1).')
         return
     elif player_bravery <= patron_bravery:
         rand_stamina_reduction = random.randint(patron_stamina_lost, 0)
@@ -509,7 +516,7 @@ def encounter_bravery(rand_patron, player_bravery, patron_bravery, saved_stealth
         elif rand_patron.stamina <= 0:
             print('\nYou successfully helped the patron!')
             player.bravery = saved_bravery
-            print("\nYour bravery level is now at", update_bravery(1))
+            print(f'"\nYour bravery capacity is now", update_bravery(1).')
             return
 
 
@@ -534,7 +541,7 @@ def patronEncounter(randPatronStatsLower, randPatronStatsUpper, randPatronStamin
     patronEncounterLoop(rand_patron, saved_stealth, saved_magic, saved_bravery, player_stamina_lost, patron_stamina_lost)
     # This takes the saved player's stamina and refills it, then increases it by 1 for winning the encounter
     player.stamina = saved_stamina
-    print("Your stamina is now at", update_stamina(1))
+    print(f'"Your stamina is now at", update_stamina(1).')
 
 
 # This function sets up the encounter with patrons, getting input from the player
@@ -721,7 +728,7 @@ def initialization_answer(choice):
 
 # Asks the player if they would like to enter the library and begin the game
 def initialization():
-    opening_choice = input("Would you like to enter the library? ")
+    opening_choice = input("\nWould you like to enter the library? ")
     if opening_choice:
         opening_choice = opening_choice[0].lower()
         initialization_answer(opening_choice)
@@ -769,8 +776,10 @@ def main():
         saved_stealth = player.getStealth()
         saved_magic = player.getMagic()
         saved_bravery = player.getBravery()
-        final_boss = Patron([random.randint(6, 7), random.randint(6, 7), random.randint(6, 7)],
-                            random.randint(7, 8))
+        final_boss = Patron([random.randint((low_pat_stat+5), (up_pat_stat+5)), random.randint((low_pat_stat+5),
+                                                                                               (up_pat_stat+5)),
+                             random.randint((low_pat_stat+5), (up_pat_stat+5))],random.randint((low_pat_stam+5),
+                                                                                               (up_pat_stam+5)))
         print("\nThe Board Director appears!")
         for item in player.itemlist:
             item_name = item[0].getItemName()
@@ -778,14 +787,14 @@ def main():
                 player.itemlist.remove(item)
         print('Uh-oh, it looks like you lost all your Escape Books.\n')
         try:
-            patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, -8, -12)
+            patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, (low_play_stam_lost-3), (low_pat_stam_lost-2))
         except RuntimeError:
             sys.exit()
         print("\nYou successfully dealt with the Board Director! Congratulations!\n")
         game = False
     conclusion()
     print('\nYour final stats are:')
-    print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: '
+    print(f'Level: {player.level}\nStealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: '
           f'{player.getStamina()}')
     print('Thanks for playing!')
 
@@ -948,13 +957,15 @@ def game_loop(master_magic_book_list):
                     checkLocation(loc)
                 # The 'check stats' query
                 elif query == 'check stat':
-                    print('Your stats are:')
-                    print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, '
-                          f'Stamina: {player.getStamina()}')
+                    print('\nYour stats are:')
+                    print(f'Level: {player.level}\nStealth: {player.getStealth()}, Magic: {player.getMagic()}, '
+                          f'Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
                 elif query == 'check master list':
                     print(master_magic_book_list)
                 elif query == 'add master list':
                     master_magic_book_list.append('a')
+                elif query == 'check level':
+                    print(player.level)
                 elif query == 'quit':
                     quitting_input = input("Are you sure? ")
                     if quitting_input[0].lower() == 'y':
@@ -1003,6 +1014,7 @@ infile_npcs.close()
 # The game is called and run from here
 introduction()
 player = characterInitialization()
-print("Welcome, " + player.getName() + ". " + "Your starting stats are: ")
-print(f'Stealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
+print("\nWelcome, " + player.getName() + ". " + "Your starting stats are: ")
+print(f'Level: {player.level}\nStealth: {player.getStealth()}, Magic: {player.getMagic()}, '
+      f'Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
 initialization()
