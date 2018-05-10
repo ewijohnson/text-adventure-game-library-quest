@@ -1,5 +1,6 @@
 import sys
 import random
+import time
 
 
 class Room:
@@ -302,14 +303,27 @@ def loopFinalLocationAppend(line, location):
 
 # This function prints off the introduction and sets the stage for the plot
 def introduction():
-    print('This is the introduction!')
+    intro_infile = open('introduction.txt', 'r')
+    intro_text = intro_infile.read()
+    intro_infile.close()
+    intro_text = intro_text.split('\n\n')
+    num = 0
+    for para in intro_text:
+        if para == intro_text[-1]:
+            print(f'{intro_text[num]}')
+            time.sleep(7)
+            num += 1
+        else:
+            print(f'{intro_text[num]}\n')
+            time.sleep(7)
+            num += 1
 
 
 # This function initializes the player's character at the beginning, granting a slight advantage in one of three categories
 def characterInitialization():
-    name_input = input("What is your name? ")
+    name_input = input("Remind me what your name is again? ")
     if name_input:
-        role_input = input("Would you like to start the game with more Stealth, Magic, or Bravery? ")
+        role_input = input(f"{name_input}, do you have more Stealth, Magic, or Bravery? ")
         if role_input:
             role_input = role_input[0].lower().strip()
             if role_input == 's':
@@ -717,7 +731,28 @@ def initialization():
 
 
 def conclusion():
-    print('This is the conclusion!')
+    conclusion_infile = open('conclusion.txt', 'r')
+    conclusion_text = conclusion_infile.read()
+    conclusion_infile.close()
+    conclusion_text = conclusion_text.split('\n\n')
+    num = 0
+    for para in conclusion_text:
+        if para == conclusion_text[0] or para == conclusion_text[1]:
+            print(f'{conclusion_text[num]}\n')
+            time.sleep(6)
+            num += 1
+        elif para == conclusion_text[-2]:
+            print(f'{conclusion_text[num]}\n')
+            time.sleep(4)
+            num += 1
+        elif para == conclusion_text[-1]:
+            print(f'{conclusion_text[num]}')
+            time.sleep(4)
+            num += 1
+        else:
+            print(f'{conclusion_text[num]}\n')
+            time.sleep(2)
+            num += 1
 
 
 # Sets up the first location and primes the beginning of the game_loop
@@ -734,9 +769,9 @@ def main():
         saved_stealth = player.getStealth()
         saved_magic = player.getMagic()
         saved_bravery = player.getBravery()
-        final_boss = Patron([random.randint(65, 75), random.randint(65, 75), random.randint(65, 75)],
-                            random.randint(75, 85))
-        print("\nThe Library Board Director appears!")
+        final_boss = Patron([random.randint(6, 7), random.randint(6, 7), random.randint(6, 7)],
+                            random.randint(7, 8))
+        print("\nThe Board Director appears!")
         for item in player.itemlist:
             item_name = item[0].getItemName()
             if item_name == 'Escape Book':
@@ -746,7 +781,7 @@ def main():
             patronEncounterLoop(final_boss, saved_stealth, saved_magic, saved_bravery, -8, -12)
         except RuntimeError:
             sys.exit()
-        print("\nYou successfully dealt with the Library Board Director! Congratulations!\n")
+        print("\nYou successfully dealt with the Board Director! Congratulations!\n")
         game = False
     conclusion()
     print('\nYour final stats are:')
