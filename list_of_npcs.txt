@@ -16,7 +16,8 @@ Head of Circulation $ "What do you need help with? Items or Magic Books? Or noth
 "To pick up an item, you have to type 'get item', and then the item name when prompted. To get a
 stamina potion, for example, type: 'get item', press Enter, and then type 'stamina potion'. The
 items won't be listed by name in the locations, but look for clues like colors or plays on words
-that point to what items might be hiding around." $
+that point to what items might be hiding around. For example, Stamina Potions are green, and Escape
+Books are yellow." $
 "What kind of Magic Book help do you need? Picking up, Checking names, Locating, or Returning? Or nothing?" $
 "To pick up Magic Books, just type 'get item', Enter, and then 'magic book'. You do not need to know its
 exact name." $
