@@ -723,7 +723,8 @@ def preparingPatronEncounter():
             difficulty_adjuster += 2
 
 
-# This function handles the actions when the player moves from location to location, including if a patron is encountered
+# This function handles the actions when the player moves from location to location, including if a patron is 
+#   encountered
 def change_location(dir_index, loc_self):
     if loc_self.directions[dir_index] != 'None':
         # This enters the new location, setting it to True
@@ -738,7 +739,8 @@ def change_location(dir_index, loc_self):
         print("\nThat room doesn't exist. Try again.")
 
 
-# This gets the index number of the list of directions, allowing the change location function to work for all six directions
+# This gets the index number of the list of directions, allowing the change location function to work for all six 
+#   directions
 def direction_input_function(direction, loc_room_loc):
     direction_list = ['north', 'east', 'south', 'west', 'up', 'down']
     dir_num = direction_list.index(direction)
@@ -1078,9 +1080,8 @@ def main():
     conclusion()
     # After the conclusion, prints off the player's final level and stats
     print(f'\nCongratulations, {player.getName()}! Your final stats are:')
-    print(
-        f'Level: {player.level}\nStealth: {player.getStealth()}, Magic: {player.getMagic()}, Bravery: {player.getBravery()}, Stamina: '
-        f'{player.getStamina()}')
+    print(f'Level: {player.level}\nStealth: {player.getStealth()}, Magic: {player.getMagic()}, '
+          f'Bravery: {player.getBravery()}, Stamina: {player.getStamina()}')
     print('Thanks for playing!')
 
 
