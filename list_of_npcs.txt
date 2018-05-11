@@ -86,8 +86,7 @@ None
 
 Reference Librarian $ "Nice day out, isn't it? Well it would be even better if
 I could find that book I've been looking for! It's for a very important patron,
-the Board Director, actually, and he's going to be quite angry if I can't find
-it." $ 
+and he's going to be quite angry if I can't find it." $
 "Oh! That's it! The Magic Book of Spirit. Thank you! I'll bring it right to the 
 Board Director. You've been a huge help."
 
