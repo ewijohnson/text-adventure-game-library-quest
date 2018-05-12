@@ -123,6 +123,7 @@ class NPC:
         print(self.speech[1].strip())
 
 
+# There is only one instance of this class at a time, the player of the game
 class Player:
 
     def __init__(self, name, level, stats, stamina):
@@ -150,11 +151,13 @@ class Player:
     def getStamina(self):
         return self.stamina
 
+    # Appends item from location to player's item list
     def pickUpItem(self, location):
         self.itemlist.append(location.items)
         print(f'You picked up a {location.getItem()}.')
         location.remove_items()
 
+    # Compares player's items to the locations where each Magic Book is returned to see if there is a match
     def lookupItems(self, item_check):
         all_my_item_names = []
         for item in self.itemlist:
@@ -167,6 +170,7 @@ class Player:
         else:
             print('oops')
 
+    # This method returns the items the player is currently holding
     def myItems(self):
         all_my_item_names = []
         item_dict = {}
@@ -723,7 +727,7 @@ def preparingPatronEncounter():
             difficulty_adjuster += 2
 
 
-# This function handles the actions when the player moves from location to location, including if a patron is 
+# This function handles the actions when the player moves from location to location, including if a patron is
 #   encountered
 def change_location(dir_index, loc_self):
     if loc_self.directions[dir_index] != 'None':
@@ -739,7 +743,7 @@ def change_location(dir_index, loc_self):
         print("\nThat room doesn't exist. Try again.")
 
 
-# This gets the index number of the list of directions, allowing the change location function to work for all six 
+# This gets the index number of the list of directions, allowing the change location function to work for all six
 #   directions
 def direction_input_function(direction, loc_room_loc):
     direction_list = ['north', 'east', 'south', 'west', 'up', 'down']
